@@ -23,6 +23,8 @@ This repository contains some experiments I do with https://gitlab.com/[GitLab] 
 
 //end::description[]
 
+* xref:mr-changes-since-last-review/README.adoc[Changes since last review on MR]
+
 // Read more on the link:{homepage}[project home page].
 
 //tag::contact-section[]

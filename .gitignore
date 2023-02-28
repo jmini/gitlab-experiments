@@ -40,3 +40,6 @@ hs_err_pid*
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/**/maven-wrapper.jar
 !/**/gradle-wrapper.jar
+
+# gitlab cli config files
+gitlab-config.properties
