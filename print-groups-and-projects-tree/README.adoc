@@ -1,0 +1,112 @@
+== Print groups and projects tree
+
+=== TL;DR
+
+In GitLab projects can be structured within groups and sub-groups.
+
+This page presents a https://www.jbang.dev/[Jbang] script that displays the corresponding tree for one given group.
+
+See: xref:PrintGroupsAndProjectsTree.java[]
+
+Example output:
+
+```
+company
+├── value-stream-a
+│   ├── [REPO] squad-b
+│   └── [REPO] squad-a
+├── value-stream-b
+│   ├── [REPO] api
+│   ├── [REPO] web-client
+│   └── [REPO] mobile-client
+├── value-stream-c
+│   ├── [REPO] squad-f
+│   └── [REPO] squad-e
+└── [REPO] shared
+```
+
+=== Usage
+
+The tree presented above was generated using:
+
+```
+jbang PrintGroupsAndProjectsTree.java tech-marketing/demos/gitlab-agile-demo/company
+```
+
+The `<group>` parameter is mandatory. It can be either a path or a group id.
+
+==== GitLab configuration
+
+The configuration file that contains the GitLab URL and the personal access token can be configured with `--config`, when not supplied the file `gitlab-config.properties` next to the script is used.
+
+```properties
+GITLAB_URL=https://gitlab.example.com
+GITLAB_AUTH_VALUE=gpat-**********
+```
+
+By default `https://gitlab.com/` is used without any authentication (to read the public groups).
+
+
+==== Print ascii chars
+
+With the `--ascii` parameter you can specify to use text characters instead of graphic characters to show the lines.
+
+Example:
+
+```
+jbang PrintGroupsAndProjectsTree.java 12782879 --ascii
+```
+
+Output:
+
+```
+todo-list
++--- business
++--- care
+|    \--- [REPO] todo-client
+\--- retail
+    \--- [REPO] todo-client
+
+```
+
+==== Print group/project names
+
+If you prefer seeing the name of the group/project instead of its path, you can use `--display=NAME`
+
+Example:
+
+```
+jbang PrintGroupsAndProjectsTree.java tech-marketing/demos/gitlab-agile-demo/awesome-co --display=NAME
+```
+
+Output:
+
+```
+Awesome Co
+├── Alliances
+│   ├── [REPO] Squad F
+│   └── [REPO] Squad E
+├── Consumer Products
+│   ├── [REPO] Web App
+│   └── [REPO] Mobile App
+├── Logistics
+│   └── [REPO] Squad C
+├── Services
+│   ├── [REPO] Labels
+│   ├── [REPO] API
+│   └── [REPO] Customer Portal
+├── Templates
+│   └── [REPO] project-template
+├── [REPO] board-templates
+├── [REPO] Service Desk
+├── [REPO] Boards
+├── [REPO] Ideas
+├── [REPO] Wiki
+└── [REPO] Awesome Co. Operations
+```
+
+=== See also:
+
+* https://j2r2b.github.io/2020/07/23/text-representation-of-trees.html[Representing a tree with ASCII or Unicode characters]
+* https://www.jbang.dev/[Jbang]
+* https://github.com/gitlab4j/gitlab4j-api[GitLab4J].
