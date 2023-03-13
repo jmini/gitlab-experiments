@@ -2,11 +2,15 @@
 
 === TL;DR
 
-This page describes how to add a comment to find the changes since the last review
+This page describes how to add a comment to find the changes since the last review.
 
 image::comment.png[]
 
 https://www.jbang.dev/[Jbang] script: xref:AddReviewAtComment.java[]
+
+Corresponding GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/issues/25559[#25559 "View changes since last review" link on MR]
+
+NOTE: *UPDATE:* we came up with the same approach working as a bot that reacts on the https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#comment-events[Comment Webhook event] sent by GitLab: https://github.com/unblu/u-needs-work/[u-needs-work]
 
 
 === Context
