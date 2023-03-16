@@ -136,8 +136,8 @@ They can also not invite one of those group (to a personal project for example).
 
 Related issues:
 
-* https://gitlab.com/gitlab-org/gitlab/-/issues/385455
 * https://gitlab.com/gitlab-org/gitlab/-/issues/267996
+* duplicated by: https://gitlab.com/gitlab-org/gitlab/-/issues/385455
 
 The workaround is as follow:
 
