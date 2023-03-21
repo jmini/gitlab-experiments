@@ -25,6 +25,8 @@ This repository contains some experiments I do with https://gitlab.com/[GitLab] 
 
 * xref:mr-changes-since-last-review/README.adoc[Changes since last review on MR]
 * xref:print-groups-and-projects-tree/README.adoc[Print groups and projects tree]
+* xref:groups-to-model-teams/README.adoc[Groups to model teams]
+* xref:external-status-check-tests/README.adoc[Tests with external status check]
 
 // Read more on the link:{homepage}[project home page].
 
