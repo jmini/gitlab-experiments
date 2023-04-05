@@ -30,6 +30,13 @@ This repository contains some experiments I do with https://gitlab.com/[GitLab] 
 
 // Read more on the link:{homepage}[project home page].
 
+=== Build all jbang scripts
+
+[source, shell]
+----
+find . -name '*.java' -exec jbang build {} \;
+----
+
 //tag::contact-section[]
 == Get in touch
 
