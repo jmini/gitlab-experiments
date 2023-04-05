@@ -41,7 +41,11 @@ The problem is that when the reviewer comes back on the MR, he has to remember w
 
 In Bitbucket this is nicely solved, by selecting the "changes since you last reviewed" option in the diff view:
 
-image:changes-since-you-last-reviewed.png[]
+image::changes-since-you-last-reviewed.png[]
+
+In GitHub there is a "view changes" button to acess the same diff:
+
+image::github-view-changes.png[]
 
 
 === Possible solution
@@ -54,12 +58,8 @@ This comment contains a link to `<mr-web-url>/diffs?start_sha=<reviewed-commit>`
 
 image::comment.png[]
 
-
-=== Outlook
-
-It would be great to not have to trigger this logic from a CLI tool.
-
-There is no webhook event emitted when when a review is filed.
+If you want a bot to post those comment, you can have a look at the https://github.com/unblu/u-needs-work/[u-needs-work] project.
+It reacts at some keywords that can be added to the review comment.
 
 
 === See also
