@@ -1,6 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
-//DEPS org.gitlab4j:gitlab4j-api:5.0.1
+//DEPS org.gitlab4j:gitlab4j-api:5.1.0
 //JAVA 17
 
 import java.io.FileInputStream;
