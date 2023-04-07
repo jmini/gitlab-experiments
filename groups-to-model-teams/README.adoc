@@ -32,8 +32,7 @@ Some configs:
 
 And then in parallel to that, we have a group structure to manage the projects:
 
-Something similar to the https://gitlab.com/tech-marketing/demos/gitlab-agile-demo/initech
-[initech group] presented in some GitLab presentations.
+Something similar to the https://gitlab.com/tech-marketing/demos/gitlab-agile-demo/initech[initech group] presented in some GitLab presentations:
 
 ```
 Gitlab root
