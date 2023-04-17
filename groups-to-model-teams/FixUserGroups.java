@@ -75,6 +75,7 @@ class FixUserGroups {
         Path c = configFile(Paths.get(""));
         Properties p = configProperties(c);
         GITLAB_URL = readProperty(p, "GITLAB_URL");
+        GITLAB_REST_URL = GITLAB_URL + "/api/v4";
         GITLAB_AUTH_VALUE = readProperty(p, "GITLAB_AUTH_VALUE");
         USER_GROUP_ROOT = readLongProperty(p, "USER_GROUP_ROOT");
         USER_GROUP_ALL = readLongProperty(p, "USER_GROUP_ALL");
