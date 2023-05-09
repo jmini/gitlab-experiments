@@ -27,6 +27,7 @@ This repository contains some experiments I do with https://gitlab.com/[GitLab] 
 * xref:print-groups-and-projects-tree/README.adoc[Print groups and projects tree]
 * xref:groups-to-model-teams/README.adoc[Groups to model teams]
 * xref:external-status-check-tests/README.adoc[Tests with external status check]
+* xref:test-links/[Tests with links]
 
 // Read more on the link:{homepage}[project home page].
 

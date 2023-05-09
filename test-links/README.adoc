@@ -1,0 +1,7 @@
+== Test links
+
+Different jbang scripts to test some PRs on the gitlab4j project
+
+* https://github.com/gitlab4j/gitlab4j-api/pull/964
+* https://github.com/gitlab4j/gitlab4j-api/pull/969
+* https://github.com/gitlab4j/gitlab4j-api/pull/975
