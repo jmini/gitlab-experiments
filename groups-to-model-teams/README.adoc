@@ -80,9 +80,30 @@ The "users groups" can be used to mention team members in issues.
 
 image::mention.png[]
 
+
+== Implementation notes
+
+=== Owner of the top group
+
+The top level group "User groups" that owns all the other "team groups" should not have any member, since somebody member of this top level group will be member of each child group.
+
+We decided to use our `@root` administrator user as owner of the top level group "User groups".
+
+
+=== Modification of member-team association "as-code"
+
+We would like everybody to be able to suggest modifications to the "teams group".
+
+So we have a script to do this.
+This script is hosted inside a Git repository.
+Modifications are driven by MRs and applied with a CI pipeline.
+
+This script also takes care of "blocked user": when a user is blocked, it should be removed from all our teams.
+
+
 == Open issues
 
-=== 1) branch protection for specific group.
+=== 1) branch protection for specific group
 
 https://gitlab.com/gitlab-org/gitlab/-/issues/345140#note_125204934
 
