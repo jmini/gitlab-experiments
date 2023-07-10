@@ -165,3 +165,11 @@ The workaround is as follow:
 * In each of the user-group sub groups we have a `do-not-use` archived project where the group `User Groups / All` is invited. This repository is configured to have the less options as possible (project is archived, minimal readme, no issues, no wiki, no-one allowed to push on the main branch...).
 
 This can be achived with the script: xref:FixUserGroups.java[FixUserGroups.java]
+
+
+=== 3) Codeowners
+
+The CODEOWNERS feature requires the group to be a direct member of the project and not a member inherited through the parent group.
+
+See related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/288851/
+
