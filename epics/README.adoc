@@ -1,0 +1,3 @@
+== Test with epics
+
+Different jbang scripts to test query on epics with the gitlab4j project.
