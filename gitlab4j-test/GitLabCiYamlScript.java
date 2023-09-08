@@ -1,0 +1,121 @@
+///usr/bin/env jbang "$0" "$@" ; exit $?
+
+//DEPS info.picocli:picocli:4.6.3
+//DEPS https://github.com/jmini/gitlab4j-api/tree/5.3.0-pr1026
+//JAVA 17
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
+import org.gitlab4j.api.GitLabApi;
+import org.gitlab4j.api.models.*;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+@Command(name = "GitLabCiYamlScript", mixinStandardHelpOptions = true, version = "GitLabCiYamlScript 0.1", description = "Tests for GitLab4J")
+public class GitLabCiYamlScript implements Callable<Integer> {
+
+    private static final String CONFIG_FILE_INITIAL_CONTENT = """
+            GITLAB_URL=https://gitlab.com
+            GITLAB_AUTH_VALUE=
+            """;
+
+    @Parameters(index = "0", description = "action to execute", defaultValue = "GET_ALL")
+    private Action action;
+
+    @Option(names = { "-k", "--key" }, description = "template key")
+    String key;
+
+    @Option(names = { "-c", "--config" }, description = "configuration file location")
+    String configFile;
+
+    private static enum Action {
+        GET_ALL, GET_SINGLE
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        Path file;
+        if (configFile != null) {
+            file = Paths.get(configFile);
+        } else {
+            file = configFile(Paths.get(""));
+        }
+        System.out.println("Reading config: " + file.toAbsolutePath());
+        Properties prop = configProperties(file);
+        String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
+        String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
+
+        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            switch(action) {
+                case GET_ALL:
+                    List<GitLabCiTemplateElement> list = gitLabApi.getGitLabCiYamlApi().getAllGitLabCiYamlTemplates();
+                    System.out.println(list);
+                    break;
+                case GET_SINGLE:
+                    if (key == null) {
+                        throw new IllegalStateException("Key (--key) id is mandatory");
+                    }
+                    GitLabCiTemplate template = gitLabApi.getGitLabCiYamlApi().getSingleGitLabCiYamlTemplate(key);
+                    System.out.println(template);
+                    break;
+            }
+        }
+        return 0;
+    }
+
+    public static Properties configProperties(Path configFile) {
+        try (InputStream is = new FileInputStream(configFile.toFile())) {
+            Properties properties = new Properties();
+            properties.load(is);
+            return properties;
+        } catch (IOException e) {
+            throw new IllegalStateException("Can not read config file", e);
+        }
+    }
+
+    public static Path configFile(Path root) {
+        Path configFile = root.toAbsolutePath()
+                .resolve("gitlab-config.properties");
+        if (!Files.isRegularFile(configFile)) {
+            try {
+                Files.writeString(configFile, CONFIG_FILE_INITIAL_CONTENT);
+                throw new IllegalStateException(String.format("Configuration file '%s' does not exist. An empty configuration file was created", configFile.toAbsolutePath()));
+            } catch (IOException e) {
+                throw new IllegalStateException("Can not write initial config file", e);
+            }
+        }
+        return configFile;
+    }
+
+    public static String readProperty(Properties p, String key) {
+        if (!p.containsKey(key)) {
+            throw new IllegalStateException(String.format("Configuration file does not contains key '%s'", key));
+        }
+        String value = p.getProperty(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(String.format("Key '%s' is not defined in configuration file", key));
+        }
+        return value;
+    }
+
+    public static String readProperty(Properties p, String key, String defaultValue) {
+        return p.getProperty(key, defaultValue);
+    }
+
+    public static void main(String... args) {
+        int exitCode = new CommandLine(new GitLabCiYamlScript()).execute(args);
+        System.exit(exitCode);
+    }
+}
