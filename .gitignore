@@ -43,3 +43,6 @@ hs_err_pid*
 
 # gitlab cli config files
 gitlab-config.properties
+
+# gitlab data folder when running in docker
+docker/gitlab-data-tmp

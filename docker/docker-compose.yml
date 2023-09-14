@@ -1,0 +1,25 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:16.3.0-ce.0'
+    restart: always
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['initial_root_password']="Pass_w0rd";
+        gitlab_rails['lfs_enabled']=false;
+        external_url 'http://localhost:8090';
+        gitlab_rails['gitlab_shell_ssh_port'] = 9022
+    ports:
+      - '8090:8090'
+      - '9443:9443' 
+      - '9022:9022'
+    expose:
+      - '8090'
+      - '9443'
+      - '9022'
+    volumes:
+      - './gitlab-data-tmp/config:/etc/gitlab'
+      - './gitlab-data-tmp/logs:/var/log/gitlab'
+      - './gitlab-data-tmp/data:/var/opt/gitlab'
+    shm_size: '256m'

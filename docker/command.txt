@@ -1,0 +1,23 @@
+# Inside the 'docker/' folder run:
+
+docker compose up
+
+# go to http://localhost:8090
+
+username: root
+password: Pass_w0rd
+
+--------------------------------------------------------------------------
+# Data is stored in a local folder 'docker/gitlab-data-tmp':
+
+sudo rm -r gitlab-data-tmp/ 
+mkdir gitlab-data-tmp
+
+--------------------------------------------------------------------------
+When "gitlab_rails['initial_root_password']" is not present in the docker compose file:
+
+# get password from the file inside docker:
+docker exec -it gitlab-web-1 grep 'Password:' /etc/gitlab/initial_root_password
+
+# Change password:
+http://localhost:8090/-/profile/password/edit
