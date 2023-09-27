@@ -1,0 +1,14 @@
+git fetch origin pull/0000/head:pr_0000
+git checkout pr_0000
+
+git tag 5.3.0-pr_0000
+git push jmini 5.3.0-pr_0000
+
+git tag --delete 5.3.0-pr_0000
+git push jmini tag --delete 5.3.0-pr_0000
+
+------------------------------------------
+
+# Fetch PR
+
+git fetch origin pull/ID/head:BRANCH_NAME
