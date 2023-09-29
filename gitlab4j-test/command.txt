@@ -12,3 +12,69 @@ git push jmini tag --delete 5.3.0-pr_0000
 # Fetch PR
 
 git fetch origin pull/ID/head:BRANCH_NAME
+
+
+==========================================
+
+Have a look at the PR https://github.com/gitlab4j/gitlab4j-api/pull/0000 (feel free to review it and give feedback)
+
+---
+
+You can use [jitpack](https://jitpack.io/) to test in advance:
+
+I created a tag in my fork in my fork: [5.3.0-pr_0000](https://github.com/jmini/gitlab4j-api/releases/tag/5.3.0-pr_0000), to test the PR and have a fixed version created by jitpack.
+
+**Usage with gradle:**
+
+```gradle
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+        content {
+            includeGroup "com.github.jmini"
+        }
+    }
+}
+
+dependencies {
+    // ...
+    implementation 'com.github.jmini:gitlab4j-api:5.3.0-pr_0000'
+    // ...
+}
+```
+
+**Usage with maven:**
+
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.github.unblu</groupId>
+    <artifactId>gitlab4j-api</artifactId>
+    <version>5.3.0-pr_0000</version>
+  </dependency>
+  <!-- ... -->
+</dependencies>
+```
+
+**Usage with jbang:**
+
+The example script uses [Jbang](https://www.jbang.dev/) where loading the dependency is really easy. You just need to declare this dependency:
+
+```java
+//DEPS https://github.com/jmini/gitlab4j-api/tree/5.3.0-pr_0000
+```
+
+Instead of:
+```java
+//DEPS org.gitlab4j:gitlab4j-api:5.3.0
+```
+
+And then Jbang does the work of adding the additional repository for you.
