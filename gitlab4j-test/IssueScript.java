@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/tree/5.3.0-pr1027
+//DEPS https://github.com/jmini/gitlab4j-api/tree/5.3.0-pr_1043
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -51,7 +51,7 @@ public class IssueScript implements Callable<Integer> {
     String configFile;
 
     private static enum Action {
-        PROJECT_ISSUES, GET_ISSUE, GET_LINKED_ISSUES, GET_EPIC_ISSUES
+        PROJECT_ISSUES, GET_ISSUE, GET_LINKED_ISSUES, GET_EPIC_ISSUES, CLOSE_ISSUE, REOPEN_ISSUE
     }
 
     @Override
@@ -81,6 +81,20 @@ public class IssueScript implements Callable<Integer> {
                 Issue issue = gitLabApi.getIssuesApi()
                         .getIssue(idOrPath(project), issueIid);
                 System.out.println(issue);
+                break;
+            case CLOSE_ISSUE:
+                ensureExists(project, "project");
+                ensureExists(issueIid, "issue");
+                Issue closedIssue = gitLabApi.getIssuesApi()
+                        .closeIssue(idOrPath(project), issueIid);
+                System.out.println(closedIssue);
+                break;
+            case REOPEN_ISSUE:
+                ensureExists(project, "project");
+                ensureExists(issueIid, "issue");
+                Issue reopenedIssue = gitLabApi.getIssuesApi()
+                        .reopenIssue(idOrPath(project), issueIid);
+                System.out.println(reopenedIssue);
                 break;
             case GET_LINKED_ISSUES:
                 ensureExists(project, "project");
