@@ -13,6 +13,11 @@ git push jmini tag --delete 5.3.0-pr_0000
 
 git fetch origin pull/ID/head:BRANCH_NAME
 
+==========================================
+
+Run TestGitLabApiBeans test wihtout docker:
+
+mvn test -Dtest=TestGitLabApiBeans -Ddocker.skip=true -Djacoco.skip=true
 
 ==========================================
 
