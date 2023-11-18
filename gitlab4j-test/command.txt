@@ -21,6 +21,19 @@ mvn test -Dtest=TestGitLabApiBeans -Ddocker.skip=true -Djacoco.skip=true
 
 ==========================================
 
+Update to newest version:
+
+Replace (with regex)
+//DEPS https://github.com/.+/gitlab4j-api/tree/.+
+//DEPS .+:gitlab4j-api:.+
+
+With:
+//DEPS org.gitlab4j:gitlab4j-api:0.0.0
+
+File to include `*.java`
+
+==========================================
+
 Have a look at the PR https://github.com/gitlab4j/gitlab4j-api/pull/0000 (feel free to review it and give feedback)
 
 ---
