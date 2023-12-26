@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:5.4.0
+//DEPS https://github.com/dpalic/gitlab4j-api/commit/7ad47ca0769bc88867208a1e2756d5e8d266e5fa
 //JAVA 17
 
 //Example usage:
@@ -55,6 +55,9 @@ public class ProtectedBranchesScript implements Callable<Integer> {
 	@Option(names = {"--codeOwnerApprovalRequired" }, description = "codeOwnerApprovalRequired")
 	private Boolean codeOwnerApprovalRequired;
 
+	@Option(names = {"--allowForcedPush" }, description = "allowForcedPush")
+	private Boolean allowForcedPush;
+
 	@Option(names = { "-c", "--config" }, description = "configuration file location")
 	String configFile;
 
@@ -94,7 +97,7 @@ public class ProtectedBranchesScript implements Callable<Integer> {
 				ensureExists(project, "project");
 				ensureExists(branch, "branch");
 				var created = gitLabApi.getProtectedBranchesApi()
-						.protectBranch(idOrPath(project), branch, pushAccessLevel, mergeAccessLevel, unprotectAccessLevel, codeOwnerApprovalRequired);
+						.protectBranch(idOrPath(project), branch, pushAccessLevel, mergeAccessLevel, unprotectAccessLevel, codeOwnerApprovalRequired, allowForcedPush);
 				System.out.println(created);
 				break;
 			case DELETE:
