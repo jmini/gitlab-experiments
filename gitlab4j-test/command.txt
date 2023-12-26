@@ -9,6 +9,18 @@ git push jmini tag --delete 5.3.0-pr_0000
 
 ------------------------------------------
 
+git rebase --onto origin/main origin/6.x
+git push --force
+
+Help message:
+-------------
+
+Be aware that your local branch `xxxxx` has diverged with the one on the GitHub.
+If you need to do one more changes on this branch:
+I recommend to use `git fetch` and `git reset --hard origin/xxxxx` before doing any local modifications instead of `git pull`.
+
+------------------------------------------
+
 # Fetch PR
 
 git fetch origin pull/ID/head:BRANCH_NAME
