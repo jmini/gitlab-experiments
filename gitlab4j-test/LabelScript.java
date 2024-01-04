@@ -25,20 +25,20 @@ import picocli.CommandLine.Parameters;
 @Command(name = "LabelScript", mixinStandardHelpOptions = true, version = "LabelScript 0.1", description = "Tests for GitLab4J")
 public class LabelScript implements Callable<Integer> {
 
-    private static final String AGENTA_PINK = "#cc338b";
-    private static final String ARK_CORAL = "#cd5b45";
-    private static final String ARK_SEA_GREEN = "#8fbc8f";
-    private static final String ARK_VIOLET = "#9400d3";
-    private static final String ARROT_ORANGE = "#ed9121";
-    private static final String AVENDER = "#e6e6fa";
-    private static final String EEP_VIOLET = "#330066";
-    private static final String HARCOAL_GREY = "#36454f";
-    private static final String ITANIUM_YELLOW = "#eee600";
-    private static final String LUE_GRAY = "#6699cc";
-    private static final String OSE_RED = "#c21e56";
-    private static final String RAY = "#808080";
-    private static final String REEN_CYAN = "#009966";
-    private static final String RIMSON = "#dc143c";
+    private static final String BLUE_GRAY = "#6699cc";
+    private static final String CARROT_ORANGE = "#ed9121";
+    private static final String CHARCOAL_GREY = "#36454f";
+    private static final String CRIMSON = "#dc143c";
+    private static final String DARK_CORAL = "#cd5b45";
+    private static final String DARK_SEA_GREEN = "#8fbc8f";
+    private static final String DARK_VIOLET = "#9400d3";
+    private static final String DEEP_VIOLET = "#330066";
+    private static final String GRAY = "#808080";
+    private static final String GREEN_CYAN = "#009966";
+    private static final String LAVENDER = "#e6e6fa";
+    private static final String MAGENTA_PINK = "#cc338b";
+    private static final String ROSE_RED = "#c21e56";
+    private static final String TITANIUM_YELLOW = "#eee600";
 
     private static final String CONFIG_FILE_INITIAL_CONTENT = """
             GITLAB_URL=https://gitlab.com
@@ -179,34 +179,34 @@ public class LabelScript implements Callable<Integer> {
             return color;
         }
         switch (color) {
-        case "AGENTA_PINK":
-            return AGENTA_PINK;
-        case "ARK_CORAL":
-            return ARK_CORAL;
-        case "ARK_SEA_GREEN":
-            return ARK_SEA_GREEN;
-        case "ARK_VIOLET":
-            return ARK_VIOLET;
-        case "ARROT_ORANGE":
-            return ARROT_ORANGE;
-        case "AVENDER":
-            return AVENDER;
-        case "EEP_VIOLET":
-            return EEP_VIOLET;
-        case "HARCOAL_GREY":
-            return HARCOAL_GREY;
-        case "ITANIUM_YELLOW":
-            return ITANIUM_YELLOW;
-        case "LUE_GRAY":
-            return LUE_GRAY;
-        case "OSE_RED":
-            return OSE_RED;
-        case "RAY":
-            return RAY;
-        case "REEN_CYAN":
-            return REEN_CYAN;
-        case "RIMSON":
-            return RIMSON;
+        case "MAGENTA_PINK":
+            return MAGENTA_PINK;
+        case "DARK_CORAL":
+            return DARK_CORAL;
+        case "DARK_SEA_GREEN":
+            return DARK_SEA_GREEN;
+        case "DARK_VIOLET":
+            return DARK_VIOLET;
+        case "CARROT_ORANGE":
+            return CARROT_ORANGE;
+        case "LAVENDER":
+            return LAVENDER;
+        case "DEEP_VIOLET":
+            return DEEP_VIOLET;
+        case "CHARCOAL_GREY":
+            return CHARCOAL_GREY;
+        case "TITANIUM_YELLOW":
+            return TITANIUM_YELLOW;
+        case "BLUE_GRAY":
+            return BLUE_GRAY;
+        case "ROSE_RED":
+            return ROSE_RED;
+        case "GRAY":
+            return GRAY;
+        case "GREEN_CYAN":
+            return GREEN_CYAN;
+        case "CRIMSON":
+            return CRIMSON;
         default:
             throw new IllegalArgumentException("Unexpected value: " + color);
         }
