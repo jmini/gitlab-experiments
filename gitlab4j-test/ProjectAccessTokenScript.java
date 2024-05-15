@@ -10,32 +10,37 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 
+import org.gitlab4j.api.Constants.ProjectAccessTokenScope;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.*;
-import org.gitlab4j.api.models.ImpersonationToken.Scope;
+import org.gitlab4j.api.models.AccessLevel;
+import org.gitlab4j.api.models.ProjectAccessToken;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "GroupAccessTokenScript", mixinStandardHelpOptions = true, version = "GroupAccessTokenScript 0.1", description = "Tests for GitLab4J")
-public class GroupAccessTokenScript implements Callable<Integer> {
+@Command(name = "ProjectAccessTokenScript", mixinStandardHelpOptions = true, version = "ProjectAccessTokenScript 0.1", description = "Tests for GitLab4J")
+public class ProjectAccessTokenScript implements Callable<Integer> {
 
     private static final String CONFIG_FILE_INITIAL_CONTENT = """
             GITLAB_URL=https://gitlab.com
             GITLAB_AUTH_VALUE=
             """;
 
-    @Parameters(index = "0", description = "action to execute", defaultValue = "LIST_GROUP_ACCESS_TOKEN")
+    @Parameters(index = "0", description = "action to execute", defaultValue = "LIST_PROJECT_ACCESS_TOKEN")
     private Action action;
 
-    @Option(names = { "-g", "--group" }, description = "group id")
-    private String group;
+    @Option(names = { "-p", "--project" }, description = "project id or path")
+    private String project;
 
     @Option(names = { "-t", "--tokenId" }, description = "token id")
     private Long tokenId;
@@ -47,7 +52,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
     private Date expiresAt;
 
     @Option(names = { "-s", "--scope" }, description = "token scopes")
-    private List<Scope> scopes = new ArrayList<>();
+    private List<ProjectAccessTokenScope> scopes = new ArrayList<>();
 
     @Option(names = { "-a", "--accessLevel" }, description = "token access level")
     private AccessLevel accessLevel;
@@ -56,7 +61,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
     String configFile;
 
     private static enum Action {
-        LIST_GROUP_ACCESS_TOKEN, GET_GROUP_ACCESS_TOKEN, CREATE_GROUP_ACCESS_TOKEN, ROTATE_GROUP_ACCESS_TOKEN, REVOKE_GROUP_ACCESS_TOKEN
+        LIST_PROJECT_ACCESS_TOKEN, GET_PROJECT_ACCESS_TOKEN, CREATE_PROJECT_ACCESS_TOKEN, ROTATE_PROJECT_ACCESS_TOKEN, REVOKE_PROJECT_ACCESS_TOKEN
     }
 
     @Override
@@ -72,34 +77,34 @@ public class GroupAccessTokenScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-        ensureExists(group, "group");
+        ensureExists(project, "project");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
-            case LIST_GROUP_ACCESS_TOKEN:
-                var tokens = gitLabApi.getGroupApi()
-                        .getGroupAccessTokens(idOrPath(group));
+            case LIST_PROJECT_ACCESS_TOKEN:
+                var tokens = gitLabApi.getProjectApi()
+                        .listProjectAccessTokens(idOrPath(project));
                 System.out.println(tokens);
                 break;
-            case GET_GROUP_ACCESS_TOKEN:
+            case GET_PROJECT_ACCESS_TOKEN:
                 ensureExists(tokenId, "tokenId");
-                var token = gitLabApi.getGroupApi()
-                        .getGroupAccessToken(idOrPath(group), tokenId);
+                var token = gitLabApi.getProjectApi()
+                        .getProjectAccessToken(idOrPath(project), tokenId);
                 System.out.println(token);
                 break;
-            case CREATE_GROUP_ACCESS_TOKEN:
-                var createdToken = gitLabApi.getGroupApi()
-                        .createGroupAccessToken(idOrPath(group), tokenName, expiresAt, scopes.toArray(new Scope[] {}), accessLevel);
+            case CREATE_PROJECT_ACCESS_TOKEN:
+                var createdToken = gitLabApi.getProjectApi()
+                        .createProjectAccessToken(idOrPath(project), tokenName, scopes, expiresAt, accessLevelValue(accessLevel));
                 System.out.println(createdToken);
                 break;
-            case ROTATE_GROUP_ACCESS_TOKEN:
-                var r = gitLabApi.getGroupApi()
-                        .rotateGroupAccessToken(idOrPath(group), getTokenId(gitLabApi), expiresAt);
+            case ROTATE_PROJECT_ACCESS_TOKEN:
+                var r = gitLabApi.getProjectApi()
+                        .rotateProjectAccessToken(idOrPath(project), getTokenId(gitLabApi), expiresAt);
                 System.out.println(r);
                 break;
-            case REVOKE_GROUP_ACCESS_TOKEN:
-                gitLabApi.getGroupApi()
-                        .revokeGroupAccessToken(idOrPath(group), getTokenId(gitLabApi));
+            case REVOKE_PROJECT_ACCESS_TOKEN:
+                gitLabApi.getProjectApi()
+                        .revokeProjectAccessToken(idOrPath(project), getTokenId(gitLabApi));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected value: " + action);
@@ -108,18 +113,25 @@ public class GroupAccessTokenScript implements Callable<Integer> {
         return 0;
     }
 
+    private static Long accessLevelValue(AccessLevel value) {
+        if (value == null) {
+            return null;
+        }
+        return value.value.longValue();
+    }
+
     private Long getTokenId(GitLabApi gitLabApi) throws GitLabApiException {
         if (tokenId != null) {
             return tokenId;
         }
         ensureExists(tokenName, "tokenName");
-        List<GroupAccessToken> tokens = gitLabApi.getGroupApi()
-                .getGroupAccessTokens(idOrPath(group));
-        GroupAccessToken token = tokens.stream()
-                .filter(t -> Objects.equals(t.getRevoked(), Boolean.FALSE))
+        List<ProjectAccessToken> tokens = gitLabApi.getProjectApi()
+                .listProjectAccessTokens(idOrPath(project));
+        ProjectAccessToken token = tokens.stream()
+                .filter(t -> Objects.equals(t.isRevoked(), Boolean.FALSE))
                 .filter(t -> tokenName.equals(t.getName()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Could not find token with name '" + tokenName + "' in group '" + idOrPath(group) + "'"));
+                .orElseThrow(() -> new IllegalStateException("Could not find token with name '" + tokenName + "' in project '" + idOrPath(project) + "'"));
         return token.getId();
     }
 
@@ -176,7 +188,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
     }
 
     public static void main(final String... args) {
-        final int exitCode = new CommandLine(new GroupAccessTokenScript()).execute(args);
+        final int exitCode = new CommandLine(new ProjectAccessTokenScript()).execute(args);
         System.exit(exitCode);
     }
 }
