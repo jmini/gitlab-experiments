@@ -1,0 +1,68 @@
+query {
+  workItemsByReference(contextNamespacePath: "tech-marketing/demos/gitlab-agile-demo/initech",
+    refs: [
+      "tech-marketing/demos/gitlab-agile-demo/initech/music-store&2",
+      "tech-marketing/demos/gitlab-agile-demo/initech&2",
+      "tech-marketing/demos/gitlab-agile-demo/initech&5",
+      "tech-marketing/demos/gitlab-agile-demo/initech/music-store/parent-portal#2"
+    ]) {
+    nodes {
+      id
+      iid
+      title
+      webUrl
+      workItemType {
+        name
+      }
+      widgets {
+        type
+        ... on WorkItemWidgetLabels {
+          labels {
+            nodes {
+              id
+              title
+            }
+          }
+        }
+        ... on WorkItemWidgetLinkedItems {
+          blocked
+          blockedByCount
+          blockingCount
+          bockedBy:linkedItems(filter: BLOCKED_BY) {
+            nodes {
+              linkId
+              linkType
+              linkCreatedAt
+              linkUpdatedAt
+              workItem {
+                id
+              }
+            }
+          }
+          related:linkedItems(filter: RELATED) {
+            nodes {
+              linkId
+              linkType
+              linkCreatedAt
+              linkUpdatedAt
+              workItem {
+                id
+              }
+            }
+          }
+          bocks:linkedItems(filter: BLOCKS) {
+            nodes {
+              linkId
+              linkType
+              linkCreatedAt
+              linkUpdatedAt
+              workItem {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
