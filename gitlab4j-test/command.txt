@@ -9,7 +9,7 @@ git push jmini tag --delete 5.3.0-pr_0000
 
 ------------------------------------------
 
-git rebase --onto origin/main origin/bbbbb
+git rebase --onto origin/main origin/ccccc
 git push --force
 
 Help message:
@@ -18,11 +18,12 @@ Help message:
 I have rebased the source branch of this PR (`bbbbb` in the `ffffff` fork) on top of `main` of this repo:
 
 ```
-git rebase --onto origin/main origin/bbbbb
+git rebase --onto origin/main origin/ccccc
 git push ffffff HEAD:bbbbb --force
 ```
 
 Be aware that your local branch `bbbbb` has diverged with the one on the GitHub.
+
 If you need to do one more changes on this branch:
 I recommend to use `git fetch` and `git reset --hard origin/bbbbb` (assuming your local `origin` is pointing to the `ffffff` fork on GitHub) before doing any local modifications instead of `git pull`.
 
