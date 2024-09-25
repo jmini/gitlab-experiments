@@ -1,0 +1,13 @@
+== GraphQL queries
+
+This folder contains some test GraphQL queries for gitlab.com
+
+The queries can be exectued directly online: https://gitlab.com/-/graphql-explorer 
+
+GitLab GraphQL API: https://docs.gitlab.com/ee/api/graphql/
+
+=== Run with java
+
+The script `JavaClient.java` contains the necessary code to run the `work-items.query.graphql` with a java client.
+
+Just run `jbang JavaClient.java` to run the query and see the results.
