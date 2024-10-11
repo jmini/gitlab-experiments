@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'jakarta.json.bind:jakarta.json.bind-api:3.0.1'
+    implementation 'org.eclipse.microprofile.graphql:microprofile-graphql-api:2.0'
+    implementation "io.smallrye:smallrye-graphql-api:$smallrye_graphql_version"
+    implementation "io.smallrye:smallrye-graphql-client-api:$smallrye_graphql_version"
+    implementation 'org.eclipse:yasson:2.0.4' // should no longer be necessary with version after '2.10.0' see https://github.com/smallrye/smallrye-graphql/pull/2196
+    implementation 'jakarta.json.bind:jakarta.json.bind-api:3.0.1'
+    runtimeOnly 'org.jboss.logmanager:jboss-logmanager:3.0.6.Final'
+
+    testImplementation "io.smallrye:smallrye-graphql-client-implementation-vertx:$smallrye_graphql_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.4"
+    testImplementation "org.assertj:assertj-core:3.11.1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.4"
+}
+
+group 'org.acme'
+version '1.0.0-SNAPSHOT'
+
+java {
+    compileJava.options.encoding = "UTF-8"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.named('test') {
+    jvmArgs '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
+    useJUnitPlatform()
+}
