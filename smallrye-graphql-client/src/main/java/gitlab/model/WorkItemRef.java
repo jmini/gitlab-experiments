@@ -31,10 +31,10 @@ public class WorkItemRef {
      * Internal ID of the work item.
      */
     private String iid;
-    /**
-     * Name or title of this object.
-     */
-    private String name;
+    //    /**
+    //     * Name or title of this object.
+    //     */
+    //    private String name;
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
      *
@@ -105,13 +105,13 @@ public class WorkItemRef {
         this.iid = iid;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    //    public String getName() {
+    //        return name;
+    //    }
+    //
+    //    public void setName(String name) {
+    //        this.name = name;
+    //    }
 
     @Deprecated
     public Namespace getNamespace() {
@@ -165,7 +165,7 @@ public class WorkItemRef {
 
     @Override
     public int hashCode() {
-        return Objects.hash(archived, confidential, createdAt, id, iid, name, namespace, reference, state, title, webUrl, workItemType);
+        return Objects.hash(archived, confidential, createdAt, id, iid, namespace, reference, state, title, webUrl, workItemType);
     }
 
     @Override
@@ -178,13 +178,13 @@ public class WorkItemRef {
             return false;
         WorkItemRef other = (WorkItemRef) obj;
         return Objects.equals(archived, other.archived) && Objects.equals(confidential, other.confidential) && Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects.equals(iid, other.iid) && Objects.equals(
-                name, other.name) && Objects.equals(namespace, other.namespace) && Objects.equals(reference, other.reference) && state == other.state && Objects.equals(title, other.title) && Objects.equals(webUrl, other.webUrl) && Objects
+                namespace, other.namespace) && Objects.equals(reference, other.reference) && state == other.state && Objects.equals(title, other.title) && Objects.equals(webUrl, other.webUrl) && Objects
                         .equals(workItemType, other.workItemType);
     }
 
     @Override
     public String toString() {
-        return "WorkItemRef [archived=" + archived + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", name=" + name + ", namespace=" + namespace + ", reference=" + reference + ", state="
+        return "WorkItemRef [archived=" + archived + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", namespace=" + namespace + ", reference=" + reference + ", state="
                 + state + ", title=" + title + ", webUrl=" + webUrl + ", workItemType=" + workItemType + "]";
     }
 }

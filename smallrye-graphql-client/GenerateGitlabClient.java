@@ -25,6 +25,7 @@ import fr.jmini.gql.codegen.config.CustomScalarMappingStrategy;
 import fr.jmini.gql.codegen.config.FieldsFilter;
 import fr.jmini.gql.codegen.config.GraphQLClientApiAnnotation;
 import fr.jmini.gql.codegen.config.IncludeStrategy;
+import fr.jmini.gql.codegen.config.InputFieldsFilter;
 import fr.jmini.gql.codegen.config.Scope;
 import fr.jmini.gql.codegen.config.TypesFilter;
 import fr.jmini.gql.schema.model.IntrospectionResponse;
@@ -85,6 +86,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("LabelConnection")
                                 .addIncludeName("Label")
                                 .addIncludeName("Namespace") //
+                                .addIncludeName("WorkItemTypeConnection") //
                                 .addIncludeName("AwardEmojiConnection") //
                                 .addIncludeName("TodoConnection") //
                                 // .addIncludeName("DesignCollection") //
@@ -117,6 +119,10 @@ class GenerateGitlabClient {
                                 // .addIncludeName("NoteableType") //
                                 .addIncludeName("NoteConnection") //
                                 .addIncludeName("Note") //
+                                // ---- MUTATION objects ----
+                                .addIncludeName("WorkItemCreatePayload") //
+                                .addIncludeName("WorkItemUpdatePayload") //
+
                         )//
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.INTERFACE)
@@ -136,12 +142,16 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemState") //
                                 .addIncludeName("WorkItemWidgetType") //
                                 .addIncludeName("MilestoneStateEnum") //
+                                // ---- MUTATION objects ----
+                                .addIncludeName("WorkItemStateEvent") //
+                                .addIncludeName("RelativePositionType") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName(schema.getQueryType()
                                         .getName())
                                 .addIncludeName("workItemsByReference") //
+                                .addIncludeName("namespace") //
                         ) //
                         .addFilter(new ArgsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -150,6 +160,13 @@ class GenerateGitlabClient {
                                 .setFieldName("workItemsByReference") //
                                 .addIncludeName("contextNamespacePath") //
                                 .addIncludeName("refs") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getQueryType()
+                                        .getName())
+                                .setFieldName("namespace") //
+                                .addIncludeName("fullPath") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -189,6 +206,12 @@ class GenerateGitlabClient {
                                 // .addIncludeName("fullName") //
                                 .addIncludeName("fullPath") //
                                 .addIncludeName("visibility") //
+                                .addIncludeName("workItemTypes") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("WorkItemTypeConnection")
+                                .addIncludeName("nodes") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -710,6 +733,94 @@ class GenerateGitlabClient {
                                 // .addIncludeName("systemNoteMetadata") //
                                 .addIncludeName("updatedAt") //
                                 .addIncludeName("url") //
+                        ) //
+                        // --- MUTATION ---
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .addIncludeName("workItemCreate") //
+                                .addIncludeName("workItemUpdate") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .setFieldName("workItemCreate") //
+                                .addIncludeName("input") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .setFieldName("workItemUpdate") //
+                                .addIncludeName("input") //
+                        ) //
+                        .addFilter(new TypesFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .addIncludeName("WorkItemCreateInput") //
+                                .addIncludeName("WorkItemUpdateInput") //
+                                .addIncludeName("WorkItemWidgetAssigneesInput") //
+                                .addIncludeName("WorkItemWidgetDescriptionInput") //
+                                .addIncludeName("WorkItemWidgetAssigneesInput") //
+                                .addIncludeName("WorkItemWidgetDescriptionInput") //
+                                .addIncludeName("WorkItemWidgetHierarchyUpdateInput") //
+                                .addIncludeName("WorkItemWidgetLabelsUpdateInput") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemCreateInput")
+                                .addIncludeName("assigneesWidget") //
+                                .addIncludeName("descriptionWidget") //
+                                .addIncludeName("namespacePath") //
+                                .addIncludeName("title") //
+                                .addIncludeName("workItemTypeId") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("WorkItemCreatePayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("workItem") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemUpdateInput")
+                                .addIncludeName("assigneesWidget") //
+                                .addIncludeName("descriptionWidget") //
+                                .addIncludeName("labelsWidget") //
+                                .addIncludeName("title") //
+                                .addIncludeName("id") //
+                                .addIncludeName("stateEvent") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("WorkItemUpdatePayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("workItem") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetAssigneesInput")
+                                .addIncludeName("assigneeIds") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetDescriptionInput")
+                                .addIncludeName("description") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetHierarchyUpdateInput")
+                                .addIncludeName("adjacentWorkItemId") //
+                                .addIncludeName("childrenIds") //
+                                .addIncludeName("parentId") //
+                                .addIncludeName("relativePosition") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetLabelsUpdateInput")
+                                .addIncludeName("addLabelIds") //
+                                .addIncludeName("removeLabelIds") //
                         ) //
                 )
                 .setModelPackageName("gitlab.model")
