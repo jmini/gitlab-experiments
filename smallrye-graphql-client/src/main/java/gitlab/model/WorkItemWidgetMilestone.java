@@ -19,8 +19,9 @@ public class WorkItemWidgetMilestone implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetMilestone setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

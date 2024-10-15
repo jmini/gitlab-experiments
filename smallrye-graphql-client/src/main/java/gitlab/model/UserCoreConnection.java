@@ -20,8 +20,9 @@ public class UserCoreConnection {
         return nodes;
     }
 
-    public void setNodes(List<UserCore> nodes) {
+    public UserCoreConnection setNodes(List<UserCore> nodes) {
         this.nodes = nodes;
+        return this;
     }
 
     @Override

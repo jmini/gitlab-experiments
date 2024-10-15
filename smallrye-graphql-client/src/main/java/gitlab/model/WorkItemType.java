@@ -20,16 +20,18 @@ public class WorkItemType {
         return id;
     }
 
-    public void setId(String id) {
+    public WorkItemType setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public WorkItemType setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override

@@ -24,16 +24,18 @@ public class WorkItemCreatePayload {
         return errors;
     }
 
-    public void setErrors(List<String> errors) {
+    public WorkItemCreatePayload setErrors(List<String> errors) {
         this.errors = errors;
+        return this;
     }
 
     public WorkItem getWorkItem() {
         return workItem;
     }
 
-    public void setWorkItem(WorkItem workItem) {
+    public WorkItemCreatePayload setWorkItem(WorkItem workItem) {
         this.workItem = workItem;
+        return this;
     }
 
     @Override

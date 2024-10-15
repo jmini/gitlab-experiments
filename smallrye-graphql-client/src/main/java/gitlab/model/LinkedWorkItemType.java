@@ -32,40 +32,45 @@ public class LinkedWorkItemType {
         return linkCreatedAt;
     }
 
-    public void setLinkCreatedAt(String linkCreatedAt) {
+    public LinkedWorkItemType setLinkCreatedAt(String linkCreatedAt) {
         this.linkCreatedAt = linkCreatedAt;
+        return this;
     }
 
     public String getLinkId() {
         return linkId;
     }
 
-    public void setLinkId(String linkId) {
+    public LinkedWorkItemType setLinkId(String linkId) {
         this.linkId = linkId;
+        return this;
     }
 
     public String getLinkType() {
         return linkType;
     }
 
-    public void setLinkType(String linkType) {
+    public LinkedWorkItemType setLinkType(String linkType) {
         this.linkType = linkType;
+        return this;
     }
 
     public String getLinkUpdatedAt() {
         return linkUpdatedAt;
     }
 
-    public void setLinkUpdatedAt(String linkUpdatedAt) {
+    public LinkedWorkItemType setLinkUpdatedAt(String linkUpdatedAt) {
         this.linkUpdatedAt = linkUpdatedAt;
+        return this;
     }
 
     public WorkItemRef getWorkItem() {
         return workItem;
     }
 
-    public void setWorkItem(WorkItemRef workItem) {
+    public LinkedWorkItemType setWorkItem(WorkItemRef workItem) {
         this.workItem = workItem;
+        return this;
     }
 
     @Override

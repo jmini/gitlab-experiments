@@ -19,8 +19,9 @@ public class WorkItemWidgetColor implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetColor setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

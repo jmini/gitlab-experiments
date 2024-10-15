@@ -39,48 +39,54 @@ public class WorkItemUpdateInput {
         return assigneesWidget;
     }
 
-    public void setAssigneesWidget(WorkItemWidgetAssigneesInput assigneesWidget) {
+    public WorkItemUpdateInput setAssigneesWidget(WorkItemWidgetAssigneesInput assigneesWidget) {
         this.assigneesWidget = assigneesWidget;
+        return this;
     }
 
     public WorkItemWidgetDescriptionInput getDescriptionWidget() {
         return descriptionWidget;
     }
 
-    public void setDescriptionWidget(WorkItemWidgetDescriptionInput descriptionWidget) {
+    public WorkItemUpdateInput setDescriptionWidget(WorkItemWidgetDescriptionInput descriptionWidget) {
         this.descriptionWidget = descriptionWidget;
+        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public WorkItemUpdateInput setId(String id) {
         this.id = id;
+        return this;
     }
 
     public WorkItemWidgetLabelsUpdateInput getLabelsWidget() {
         return labelsWidget;
     }
 
-    public void setLabelsWidget(WorkItemWidgetLabelsUpdateInput labelsWidget) {
+    public WorkItemUpdateInput setLabelsWidget(WorkItemWidgetLabelsUpdateInput labelsWidget) {
         this.labelsWidget = labelsWidget;
+        return this;
     }
 
     public WorkItemStateEvent getStateEvent() {
         return stateEvent;
     }
 
-    public void setStateEvent(WorkItemStateEvent stateEvent) {
+    public WorkItemUpdateInput setStateEvent(WorkItemStateEvent stateEvent) {
         this.stateEvent = stateEvent;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public WorkItemUpdateInput setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     @Override

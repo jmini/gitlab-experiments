@@ -19,8 +19,9 @@ public class WorkItemWidgetCrmContacts implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetCrmContacts setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

@@ -17,8 +17,9 @@ public class WorkItemWidgetAssigneesInput {
         return assigneeIds;
     }
 
-    public void setAssigneeIds(List<String> assigneeIds) {
+    public WorkItemWidgetAssigneesInput setAssigneeIds(List<String> assigneeIds) {
         this.assigneeIds = assigneeIds;
+        return this;
     }
 
     @Override

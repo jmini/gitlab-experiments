@@ -19,8 +19,9 @@ public class WorkItemWidgetTimeTracking implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetTimeTracking setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

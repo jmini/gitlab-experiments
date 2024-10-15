@@ -19,8 +19,9 @@ public class WorkItemWidgetCurrentUserTodos implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetCurrentUserTodos setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

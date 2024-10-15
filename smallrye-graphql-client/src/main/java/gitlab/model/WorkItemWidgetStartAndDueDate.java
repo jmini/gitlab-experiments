@@ -19,8 +19,9 @@ public class WorkItemWidgetStartAndDueDate implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetStartAndDueDate setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

@@ -27,24 +27,27 @@ public class UserCore {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public UserCore setActive(Boolean active) {
         this.active = active;
+        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public UserCore setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public UserCore setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     @Override

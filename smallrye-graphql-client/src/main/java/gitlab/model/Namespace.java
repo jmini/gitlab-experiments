@@ -30,24 +30,27 @@ public class Namespace {
         return fullPath;
     }
 
-    public void setFullPath(String fullPath) {
+    public Namespace setFullPath(String fullPath) {
         this.fullPath = fullPath;
+        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public Namespace setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(String visibility) {
+    public Namespace setVisibility(String visibility) {
         this.visibility = visibility;
+        return this;
     }
 
     @Deprecated
@@ -56,8 +59,9 @@ public class Namespace {
     }
 
     @Deprecated
-    public void setWorkItemTypes(WorkItemTypeConnection workItemTypes) {
+    public Namespace setWorkItemTypes(WorkItemTypeConnection workItemTypes) {
         this.workItemTypes = workItemTypes;
+        return this;
     }
 
     @Override

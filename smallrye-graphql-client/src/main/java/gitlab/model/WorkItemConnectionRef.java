@@ -24,16 +24,18 @@ public class WorkItemConnectionRef {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public WorkItemConnectionRef setCount(Integer count) {
         this.count = count;
+        return this;
     }
 
     public List<WorkItemRef> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<WorkItemRef> nodes) {
+    public WorkItemConnectionRef setNodes(List<WorkItemRef> nodes) {
         this.nodes = nodes;
+        return this;
     }
 
     @Override

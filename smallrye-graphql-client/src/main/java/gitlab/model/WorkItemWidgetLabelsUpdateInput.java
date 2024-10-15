@@ -21,16 +21,18 @@ public class WorkItemWidgetLabelsUpdateInput {
         return addLabelIds;
     }
 
-    public void setAddLabelIds(List<String> addLabelIds) {
+    public WorkItemWidgetLabelsUpdateInput setAddLabelIds(List<String> addLabelIds) {
         this.addLabelIds = addLabelIds;
+        return this;
     }
 
     public List<String> getRemoveLabelIds() {
         return removeLabelIds;
     }
 
-    public void setRemoveLabelIds(List<String> removeLabelIds) {
+    public WorkItemWidgetLabelsUpdateInput setRemoveLabelIds(List<String> removeLabelIds) {
         this.removeLabelIds = removeLabelIds;
+        return this;
     }
 
     @Override

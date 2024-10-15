@@ -19,8 +19,9 @@ public class WorkItemWidgetWeight implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetWeight setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

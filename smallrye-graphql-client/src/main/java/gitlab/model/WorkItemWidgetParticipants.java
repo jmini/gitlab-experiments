@@ -19,8 +19,9 @@ public class WorkItemWidgetParticipants implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetParticipants setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

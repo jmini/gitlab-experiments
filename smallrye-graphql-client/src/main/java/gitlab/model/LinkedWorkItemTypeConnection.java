@@ -20,8 +20,9 @@ public class LinkedWorkItemTypeConnection {
         return nodes;
     }
 
-    public void setNodes(List<LinkedWorkItemType> nodes) {
+    public LinkedWorkItemTypeConnection setNodes(List<LinkedWorkItemType> nodes) {
         this.nodes = nodes;
+        return this;
     }
 
     @Override

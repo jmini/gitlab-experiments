@@ -79,56 +79,63 @@ public class WorkItem {
     }
 
     @Deprecated
-    public void setArchived(Boolean archived) {
+    public WorkItem setArchived(Boolean archived) {
         this.archived = archived;
+        return this;
     }
 
     public String getClosedAt() {
         return closedAt;
     }
 
-    public void setClosedAt(String closedAt) {
+    public WorkItem setClosedAt(String closedAt) {
         this.closedAt = closedAt;
+        return this;
     }
 
     public Boolean getConfidential() {
         return confidential;
     }
 
-    public void setConfidential(Boolean confidential) {
+    public WorkItem setConfidential(Boolean confidential) {
         this.confidential = confidential;
+        return this;
     }
 
     public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public WorkItem setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public WorkItem setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getIid() {
         return iid;
     }
 
-    public void setIid(String iid) {
+    public WorkItem setIid(String iid) {
         this.iid = iid;
+        return this;
     }
 
     public Integer getLockVersion() {
         return lockVersion;
     }
 
-    public void setLockVersion(Integer lockVersion) {
+    public WorkItem setLockVersion(Integer lockVersion) {
         this.lockVersion = lockVersion;
+        return this;
     }
 
     @Deprecated
@@ -137,64 +144,72 @@ public class WorkItem {
     }
 
     @Deprecated
-    public void setNamespace(Namespace namespace) {
+    public WorkItem setNamespace(Namespace namespace) {
         this.namespace = namespace;
+        return this;
     }
 
     public String getReference() {
         return reference;
     }
 
-    public void setReference(String reference) {
+    public WorkItem setReference(String reference) {
         this.reference = reference;
+        return this;
     }
 
     public WorkItemState getState() {
         return state;
     }
 
-    public void setState(WorkItemState state) {
+    public WorkItem setState(WorkItemState state) {
         this.state = state;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public WorkItem setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public WorkItem setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
     }
 
     public String getWebUrl() {
         return webUrl;
     }
 
-    public void setWebUrl(String webUrl) {
+    public WorkItem setWebUrl(String webUrl) {
         this.webUrl = webUrl;
+        return this;
     }
 
     public List<WorkItemWidget> getWidgets() {
         return widgets;
     }
 
-    public void setWidgets(List<WorkItemWidget> widgets) {
+    public WorkItem setWidgets(List<WorkItemWidget> widgets) {
         this.widgets = widgets;
+        return this;
     }
 
     public WorkItemType getWorkItemType() {
         return workItemType;
     }
 
-    public void setWorkItemType(WorkItemType workItemType) {
+    public WorkItem setWorkItemType(WorkItemType workItemType) {
         this.workItemType = workItemType;
+        return this;
     }
 
     @Override

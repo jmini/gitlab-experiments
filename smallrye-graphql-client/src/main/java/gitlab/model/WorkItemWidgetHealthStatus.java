@@ -19,8 +19,9 @@ public class WorkItemWidgetHealthStatus implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetHealthStatus setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

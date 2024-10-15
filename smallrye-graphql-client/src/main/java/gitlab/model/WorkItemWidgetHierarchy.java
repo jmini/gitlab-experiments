@@ -27,24 +27,27 @@ public class WorkItemWidgetHierarchy implements WorkItemWidget {
         return ancestors;
     }
 
-    public void setAncestors(WorkItemConnectionRef ancestors) {
+    public WorkItemWidgetHierarchy setAncestors(WorkItemConnectionRef ancestors) {
         this.ancestors = ancestors;
+        return this;
     }
 
     public WorkItemConnectionRef getChildren() {
         return children;
     }
 
-    public void setChildren(WorkItemConnectionRef children) {
+    public WorkItemWidgetHierarchy setChildren(WorkItemConnectionRef children) {
         this.children = children;
+        return this;
     }
 
     public WorkItemRef getParent() {
         return parent;
     }
 
-    public void setParent(WorkItemRef parent) {
+    public WorkItemWidgetHierarchy setParent(WorkItemRef parent) {
         this.parent = parent;
+        return this;
     }
 
     @Override

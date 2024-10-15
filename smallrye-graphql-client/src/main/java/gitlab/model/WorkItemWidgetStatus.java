@@ -19,8 +19,9 @@ public class WorkItemWidgetStatus implements WorkItemWidget {
         return status;
     }
 
-    public void setStatus(String status) {
+    public WorkItemWidgetStatus setStatus(String status) {
         this.status = status;
+        return this;
     }
 
     @Override

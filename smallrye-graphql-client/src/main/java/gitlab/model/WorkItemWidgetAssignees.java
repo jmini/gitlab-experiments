@@ -23,16 +23,18 @@ public class WorkItemWidgetAssignees implements WorkItemWidget {
         return assignees;
     }
 
-    public void setAssignees(UserCoreConnection assignees) {
+    public WorkItemWidgetAssignees setAssignees(UserCoreConnection assignees) {
         this.assignees = assignees;
+        return this;
     }
 
     public WorkItemWidgetType getType() {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetAssignees setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

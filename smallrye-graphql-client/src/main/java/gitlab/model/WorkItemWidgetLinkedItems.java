@@ -27,16 +27,18 @@ public class WorkItemWidgetLinkedItems implements WorkItemWidget {
     }
 
     @Deprecated
-    public void setLinkedItems(LinkedWorkItemTypeConnection linkedItems) {
+    public WorkItemWidgetLinkedItems setLinkedItems(LinkedWorkItemTypeConnection linkedItems) {
         this.linkedItems = linkedItems;
+        return this;
     }
 
     public WorkItemWidgetType getType() {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetLinkedItems setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

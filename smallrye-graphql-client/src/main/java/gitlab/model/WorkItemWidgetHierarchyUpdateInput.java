@@ -29,32 +29,36 @@ public class WorkItemWidgetHierarchyUpdateInput {
         return adjacentWorkItemId;
     }
 
-    public void setAdjacentWorkItemId(String adjacentWorkItemId) {
+    public WorkItemWidgetHierarchyUpdateInput setAdjacentWorkItemId(String adjacentWorkItemId) {
         this.adjacentWorkItemId = adjacentWorkItemId;
+        return this;
     }
 
     public List<String> getChildrenIds() {
         return childrenIds;
     }
 
-    public void setChildrenIds(List<String> childrenIds) {
+    public WorkItemWidgetHierarchyUpdateInput setChildrenIds(List<String> childrenIds) {
         this.childrenIds = childrenIds;
+        return this;
     }
 
     public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public WorkItemWidgetHierarchyUpdateInput setParentId(String parentId) {
         this.parentId = parentId;
+        return this;
     }
 
     public RelativePositionType getRelativePosition() {
         return relativePosition;
     }
 
-    public void setRelativePosition(RelativePositionType relativePosition) {
+    public WorkItemWidgetHierarchyUpdateInput setRelativePosition(RelativePositionType relativePosition) {
         this.relativePosition = relativePosition;
+        return this;
     }
 
     @Override

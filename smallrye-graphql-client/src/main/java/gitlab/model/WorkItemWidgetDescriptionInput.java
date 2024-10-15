@@ -16,8 +16,9 @@ public class WorkItemWidgetDescriptionInput {
         return description;
     }
 
-    public void setDescription(String description) {
+    public WorkItemWidgetDescriptionInput setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     @Override

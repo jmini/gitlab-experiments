@@ -91,23 +91,22 @@ class RunTest {
                 .findAny()
                 .map(WorkItemType::getId)
                 .orElseThrow(() -> new IllegalStateException("Could not find workItemType corresponding to " + workItemType));
-        WorkItemCreateInput createInput = new WorkItemCreateInput();
-        createInput.setTitle("Test " + System.currentTimeMillis());
-        createInput.setNamespacePath(owner);
-        createInput.setWorkItemTypeId(workItemTypeId);
-        WorkItemWidgetDescriptionInput description = new WorkItemWidgetDescriptionInput();
-        description.setDescription("Test description " + System.currentTimeMillis());
-        createInput.setDescriptionWidget(description);
+
+        WorkItemCreateInput createInput = new WorkItemCreateInput()
+                .setTitle("Test " + System.currentTimeMillis())
+                .setNamespacePath(owner)
+                .setWorkItemTypeId(workItemTypeId)
+                .setDescriptionWidget(new WorkItemWidgetDescriptionInput()
+                        .setDescription("Test description " + System.currentTimeMillis()));
         api.workItemCreate(createInput);
         WorkItemCreatePayload createResponse = api.workItemCreate(createInput);
         System.out.println("createResponse: " + createResponse);
 
-        WorkItemUpdateInput updateInput = new WorkItemUpdateInput();
-        updateInput.setId(createResponse.getWorkItem()
-                .getId());
-        WorkItemWidgetDescriptionInput updatedDescription = new WorkItemWidgetDescriptionInput();
-        updatedDescription.setDescription("Updated description " + System.currentTimeMillis());
-        updateInput.setDescriptionWidget(updatedDescription);
+        WorkItemUpdateInput updateInput = new WorkItemUpdateInput()
+                .setId(createResponse.getWorkItem()
+                        .getId())
+                .setDescriptionWidget(new WorkItemWidgetDescriptionInput()
+                        .setDescription("Updated description " + System.currentTimeMillis()));
         WorkItemUpdatePayload updateResponse = api.workItemUpdate(updateInput);
         System.out.println("updateResponse: " + updateResponse);
 

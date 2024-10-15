@@ -19,8 +19,9 @@ public class WorkItemWidgetAwardEmoji implements WorkItemWidget {
         return type;
     }
 
-    public void setType(WorkItemWidgetType type) {
+    public WorkItemWidgetAwardEmoji setType(WorkItemWidgetType type) {
         this.type = type;
+        return this;
     }
 
     @Override

@@ -65,40 +65,45 @@ public class WorkItemRef {
     }
 
     @Deprecated
-    public void setArchived(Boolean archived) {
+    public WorkItemRef setArchived(Boolean archived) {
         this.archived = archived;
+        return this;
     }
 
     public Boolean getConfidential() {
         return confidential;
     }
 
-    public void setConfidential(Boolean confidential) {
+    public WorkItemRef setConfidential(Boolean confidential) {
         this.confidential = confidential;
+        return this;
     }
 
     public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public WorkItemRef setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public WorkItemRef setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getIid() {
         return iid;
     }
 
-    public void setIid(String iid) {
+    public WorkItemRef setIid(String iid) {
         this.iid = iid;
+        return this;
     }
 
     @Deprecated
@@ -107,48 +112,54 @@ public class WorkItemRef {
     }
 
     @Deprecated
-    public void setNamespace(Namespace namespace) {
+    public WorkItemRef setNamespace(Namespace namespace) {
         this.namespace = namespace;
+        return this;
     }
 
     public String getReference() {
         return reference;
     }
 
-    public void setReference(String reference) {
+    public WorkItemRef setReference(String reference) {
         this.reference = reference;
+        return this;
     }
 
     public WorkItemState getState() {
         return state;
     }
 
-    public void setState(WorkItemState state) {
+    public WorkItemRef setState(WorkItemState state) {
         this.state = state;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public WorkItemRef setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getWebUrl() {
         return webUrl;
     }
 
-    public void setWebUrl(String webUrl) {
+    public WorkItemRef setWebUrl(String webUrl) {
         this.webUrl = webUrl;
+        return this;
     }
 
     public WorkItemType getWorkItemType() {
         return workItemType;
     }
 
-    public void setWorkItemType(WorkItemType workItemType) {
+    public WorkItemRef setWorkItemType(WorkItemType workItemType) {
         this.workItemType = workItemType;
+        return this;
     }
 
     @Override

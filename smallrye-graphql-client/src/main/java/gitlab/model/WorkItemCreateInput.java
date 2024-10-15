@@ -35,40 +35,45 @@ public class WorkItemCreateInput {
         return assigneesWidget;
     }
 
-    public void setAssigneesWidget(WorkItemWidgetAssigneesInput assigneesWidget) {
+    public WorkItemCreateInput setAssigneesWidget(WorkItemWidgetAssigneesInput assigneesWidget) {
         this.assigneesWidget = assigneesWidget;
+        return this;
     }
 
     public WorkItemWidgetDescriptionInput getDescriptionWidget() {
         return descriptionWidget;
     }
 
-    public void setDescriptionWidget(WorkItemWidgetDescriptionInput descriptionWidget) {
+    public WorkItemCreateInput setDescriptionWidget(WorkItemWidgetDescriptionInput descriptionWidget) {
         this.descriptionWidget = descriptionWidget;
+        return this;
     }
 
     public String getNamespacePath() {
         return namespacePath;
     }
 
-    public void setNamespacePath(String namespacePath) {
+    public WorkItemCreateInput setNamespacePath(String namespacePath) {
         this.namespacePath = namespacePath;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public WorkItemCreateInput setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getWorkItemTypeId() {
         return workItemTypeId;
     }
 
-    public void setWorkItemTypeId(String workItemTypeId) {
+    public WorkItemCreateInput setWorkItemTypeId(String workItemTypeId) {
         this.workItemTypeId = workItemTypeId;
+        return this;
     }
 
     @Override
