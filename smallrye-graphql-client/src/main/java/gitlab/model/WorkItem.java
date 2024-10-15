@@ -10,6 +10,7 @@ public class WorkItem {
 
     /**
      * Whether the work item belongs to an archived project. Always false for group level work items. Introduced in GitLab 16.5: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 16.5.
      */
     @Deprecated
@@ -40,6 +41,7 @@ public class WorkItem {
     private Integer lockVersion;
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 15.10.
      */
     @Deprecated

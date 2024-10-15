@@ -12,6 +12,7 @@ public class WorkItemWidgetLinkedItems implements WorkItemWidget {
 
     /**
      * Linked items for the work item. Introduced in GitLab 16.3: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 16.3.
      */
     @Deprecated

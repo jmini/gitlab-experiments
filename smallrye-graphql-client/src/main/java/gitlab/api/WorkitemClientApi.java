@@ -43,6 +43,7 @@ public interface WorkitemClientApi {
 
     /**
      * Find work items by their reference. Introduced in GitLab 16.7: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 16.7.
      */
     @Deprecated
@@ -51,6 +52,7 @@ public interface WorkitemClientApi {
 
     /**
      * Creates a work item. Introduced in GitLab 15.1: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 15.1.
      */
     @Deprecated
@@ -59,6 +61,7 @@ public interface WorkitemClientApi {
 
     /**
      * Updates a work item by Global ID. Introduced in GitLab 15.1: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 15.1.
      */
     @Deprecated

@@ -21,6 +21,7 @@ public class Namespace {
     private String visibility;
     /**
      * Work item types available to the namespace. Introduced in GitLab 17.2: **Status**: Experiment.
+     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 17.2.
      */
     @Deprecated
