@@ -110,6 +110,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemWidgetWeight")
                                 .addIncludeName("UserCoreConnection")
                                 .addIncludeName("LabelConnection")
+                                .addIncludeName("PageInfo")
                                 .addIncludeName("Label")
                                 .addIncludeName("Namespace") //
                                 .addIncludeName("WorkItemTypeConnection") //
@@ -181,6 +182,8 @@ class GenerateGitlabClient {
                                         .getName())
                                 .addIncludeName("workItemsByReference") //
                                 .addIncludeName("namespace") //
+                                .addIncludeName("group") //
+                                .addIncludeName("project") //
                         ) //
                         .addFilter(new ArgsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -195,6 +198,20 @@ class GenerateGitlabClient {
                                 .setTypeName(schema.getQueryType()
                                         .getName())
                                 .setFieldName("namespace") //
+                                .addIncludeName("fullPath") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getQueryType()
+                                        .getName())
+                                .setFieldName("group") //
+                                .addIncludeName("fullPath") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getQueryType()
+                                        .getName())
+                                .setFieldName("project") //
                                 .addIncludeName("fullPath") //
                         ) //
                         .addFilter(new FieldsFilter()
@@ -433,7 +450,16 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("LabelConnection")
+                                .addIncludeName("count") //
                                 .addIncludeName("nodes") //
+                                .addIncludeName("pageInfo") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("PageInfo")
+                                .addIncludeName("hasNextPage") //
+                                .addIncludeName("endCursor") //
+                                .addIncludeName("startCursor") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -653,6 +679,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("id") //
                                 .addIncludeName("name") //
                                 .addIncludeName("webUrl") //
+                                .addIncludeName("labels") //
                         //XXX .addIncludeName("workItem") //
                         ) //
                         .addFilter(new FieldsFilter()
@@ -680,13 +707,15 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("Project")
-                                .addIncludeName("group") //
+                                // .addIncludeName("group") //
                                 .addIncludeName("id") //
                                 .addIncludeName("name") //
                                 .addIncludeName("nameWithNamespace") //
                                 .addIncludeName("namespace") //
                                 .addIncludeName("path") //
                                 .addIncludeName("webUrl") //
+                                .addIncludeName("workItemTypes") //
+                                .addIncludeName("labels") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
