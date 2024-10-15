@@ -4,13 +4,14 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.graphql.Name;
 
+/**
+ * Duplicate of `WorkItem` to avoid SRGQLDC035008: Field recursion found
+ */
 @Name("WorkItemRef")
-//Duplicate of `WorkItem` to avoid SRGQLDC035008: Field recursion found
 public class WorkItemRef {
 
     /**
      * Whether the work item belongs to an archived project. Always false for group level work items. Introduced in GitLab 16.5: **Status**: Experiment.
-     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 16.5.
      */
     @Deprecated
@@ -31,13 +32,8 @@ public class WorkItemRef {
      * Internal ID of the work item.
      */
     private String iid;
-    //    /**
-    //     * Name or title of this object.
-    //     */
-    //    private String name;
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
-     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 15.10.
      */
     @Deprecated
@@ -105,14 +101,6 @@ public class WorkItemRef {
         this.iid = iid;
     }
 
-    //    public String getName() {
-    //        return name;
-    //    }
-    //
-    //    public void setName(String name) {
-    //        this.name = name;
-    //    }
-
     @Deprecated
     public Namespace getNamespace() {
         return namespace;
@@ -177,14 +165,12 @@ public class WorkItemRef {
         if (getClass() != obj.getClass())
             return false;
         WorkItemRef other = (WorkItemRef) obj;
-        return Objects.equals(archived, other.archived) && Objects.equals(confidential, other.confidential) && Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects.equals(iid, other.iid) && Objects.equals(
-                namespace, other.namespace) && Objects.equals(reference, other.reference) && state == other.state && Objects.equals(title, other.title) && Objects.equals(webUrl, other.webUrl) && Objects
-                        .equals(workItemType, other.workItemType);
+        return Objects.equals(archived, other.archived) && Objects.equals(confidential, other.confidential) && Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects.equals(iid, other.iid) && Objects.equals(namespace, other.namespace) && Objects.equals(reference, other.reference) && Objects.equals(state, other.state) && Objects.equals(title, other.title) && Objects.equals(webUrl, other.webUrl) && Objects.equals(workItemType, other.workItemType);
     }
 
     @Override
     public String toString() {
-        return "WorkItemRef [archived=" + archived + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", namespace=" + namespace + ", reference=" + reference + ", state="
-                + state + ", title=" + title + ", webUrl=" + webUrl + ", workItemType=" + workItemType + "]";
+        return "WorkItemRef [archived=" + archived + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", namespace=" + namespace + ", reference=" + reference + ", state=" + state + ", title=" + title + ", webUrl=" + webUrl + ", workItemType=" + workItemType + "]";
     }
+
 }

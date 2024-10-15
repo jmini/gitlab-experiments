@@ -6,10 +6,9 @@ import java.util.Objects;
 import org.eclipse.microprofile.graphql.Name;
 
 /**
- * The connection type for WorkItem.
+ * Duplicate of `WorkItemConnection` to avoid SRGQLDC035008: Field recursion found
  */
 @Name("WorkItemConnectionRef")
-//Duplicate of `WorkItemConnection` to avoid SRGQLDC035008: Field recursion found
 public class WorkItemConnectionRef {
 
     /**
@@ -56,7 +55,7 @@ public class WorkItemConnectionRef {
 
     @Override
     public String toString() {
-        return "WorkItemConnection [count=" + count + ", nodes=" + nodes + "]";
+        return "WorkItemConnectionRef [count=" + count + ", nodes=" + nodes + "]";
     }
 
 }

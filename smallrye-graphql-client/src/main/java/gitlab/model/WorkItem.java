@@ -10,7 +10,6 @@ public class WorkItem {
 
     /**
      * Whether the work item belongs to an archived project. Always false for group level work items. Introduced in GitLab 16.5: **Status**: Experiment.
-     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 16.5.
      */
     @Deprecated
@@ -39,13 +38,8 @@ public class WorkItem {
      * Lock version of the work item. Incremented each time the work item is updated.
      */
     private Integer lockVersion;
-    //    /**
-    //     * Name or title of this object.
-    //     */
-    //    private String name;
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
-     *
      * @deprecated **Status**: Experiment. Introduced in GitLab 15.10.
      */
     @Deprecated
@@ -137,14 +131,6 @@ public class WorkItem {
         this.lockVersion = lockVersion;
     }
 
-    //    public String getName() {
-    //        return name;
-    //    }
-    //
-    //    public void setName(String name) {
-    //        this.name = name;
-    //    }
-
     @Deprecated
     public Namespace getNamespace() {
         return namespace;
@@ -225,15 +211,12 @@ public class WorkItem {
         if (getClass() != obj.getClass())
             return false;
         WorkItem other = (WorkItem) obj;
-        return Objects.equals(archived, other.archived) && Objects.equals(closedAt, other.closedAt) && Objects.equals(confidential, other.confidential) && Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects
-                .equals(iid, other.iid) && Objects.equals(lockVersion, other.lockVersion) && Objects.equals(namespace, other.namespace) && Objects.equals(reference, other.reference) && Objects.equals(state, other.state) && Objects.equals(
-                        title, other.title) && Objects.equals(updatedAt, other.updatedAt) && Objects.equals(webUrl, other.webUrl) && Objects.equals(widgets, other.widgets) && Objects.equals(workItemType, other.workItemType);
+        return Objects.equals(archived, other.archived) && Objects.equals(closedAt, other.closedAt) && Objects.equals(confidential, other.confidential) && Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects.equals(iid, other.iid) && Objects.equals(lockVersion, other.lockVersion) && Objects.equals(namespace, other.namespace) && Objects.equals(reference, other.reference) && Objects.equals(state, other.state) && Objects.equals(title, other.title) && Objects.equals(updatedAt, other.updatedAt) && Objects.equals(webUrl, other.webUrl) && Objects.equals(widgets, other.widgets) && Objects.equals(workItemType, other.workItemType);
     }
 
     @Override
     public String toString() {
-        return "WorkItem [archived=" + archived + ", closedAt=" + closedAt + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", lockVersion=" + lockVersion + ", namespace="
-                + namespace + ", reference=" + reference + ", state=" + state + ", title=" + title + ", updatedAt=" + updatedAt + ", webUrl=" + webUrl + ", widgets=" + widgets + ", workItemType=" + workItemType + "]";
+        return "WorkItem [archived=" + archived + ", closedAt=" + closedAt + ", confidential=" + confidential + ", createdAt=" + createdAt + ", id=" + id + ", iid=" + iid + ", lockVersion=" + lockVersion + ", namespace=" + namespace + ", reference=" + reference + ", state=" + state + ", title=" + title + ", updatedAt=" + updatedAt + ", webUrl=" + webUrl + ", widgets=" + widgets + ", workItemType=" + workItemType + "]";
     }
 
 }

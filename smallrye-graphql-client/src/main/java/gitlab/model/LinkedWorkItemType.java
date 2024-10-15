@@ -82,8 +82,7 @@ public class LinkedWorkItemType {
         if (getClass() != obj.getClass())
             return false;
         LinkedWorkItemType other = (LinkedWorkItemType) obj;
-        return Objects.equals(linkCreatedAt, other.linkCreatedAt) && Objects.equals(linkId, other.linkId) && Objects.equals(linkType, other.linkType) && Objects.equals(linkUpdatedAt, other.linkUpdatedAt) && Objects.equals(workItem,
-                other.workItem);
+        return Objects.equals(linkCreatedAt, other.linkCreatedAt) && Objects.equals(linkId, other.linkId) && Objects.equals(linkType, other.linkType) && Objects.equals(linkUpdatedAt, other.linkUpdatedAt) && Objects.equals(workItem, other.workItem);
     }
 
     @Override
