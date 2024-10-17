@@ -24,11 +24,11 @@ public class WorkItemRef {
     /**
      * Timestamp of when the work item was created.
      */
-    private String createdAt;
+    private Time createdAt;
     /**
      * Global ID of the work item.
      */
-    private String id;
+    private WorkItemID id;
     /**
      * Internal ID of the work item.
      */
@@ -81,20 +81,20 @@ public class WorkItemRef {
         return this;
     }
 
-    public String getCreatedAt() {
+    public Time getCreatedAt() {
         return createdAt;
     }
 
-    public WorkItemRef setCreatedAt(String createdAt) {
+    public WorkItemRef setCreatedAt(Time createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public String getId() {
+    public WorkItemID getId() {
         return id;
     }
 
-    public WorkItemRef setId(String id) {
+    public WorkItemRef setId(WorkItemID id) {
         this.id = id;
         return this;
     }

@@ -10,30 +10,30 @@ public class WorkItemWidgetStartAndDueDateUpdateInput {
     /**
      * Due date for the work item.
      */
-    private String dueDate;
+    private Date dueDate;
     /**
      * Start date for the work item.
      */
-    private String startDate;
+    private Date startDate;
     /**
      * Indicates if the work item is using fixed dates.
      */
     private Boolean isFixed;
 
-    public String getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public WorkItemWidgetStartAndDueDateUpdateInput setDueDate(String dueDate) {
+    public WorkItemWidgetStartAndDueDateUpdateInput setDueDate(Date dueDate) {
         this.dueDate = dueDate;
         return this;
     }
 
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public WorkItemWidgetStartAndDueDateUpdateInput setStartDate(String startDate) {
+    public WorkItemWidgetStartAndDueDateUpdateInput setStartDate(Date startDate) {
         this.startDate = startDate;
         return this;
     }

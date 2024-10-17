@@ -11,13 +11,13 @@ public class WorkItemWidgetAssigneesInput {
     /**
      * Global IDs of assignees.
      */
-    private List<String> assigneeIds;
+    private List<UserID> assigneeIds;
 
-    public List<String> getAssigneeIds() {
+    public List<UserID> getAssigneeIds() {
         return assigneeIds;
     }
 
-    public WorkItemWidgetAssigneesInput setAssigneeIds(List<String> assigneeIds) {
+    public WorkItemWidgetAssigneesInput setAssigneeIds(List<UserID> assigneeIds) {
         this.assigneeIds = assigneeIds;
         return this;
     }

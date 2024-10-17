@@ -22,6 +22,7 @@ import gitlab.model.WorkItemType;
 import gitlab.model.WorkItemUpdateInput;
 import gitlab.model.WorkItemUpdatePayload;
 import gitlab.model.WorkItemWidgetDescriptionInput;
+import gitlab.model.WorkItemsTypeID;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 
 class RunTest {
@@ -84,7 +85,7 @@ class RunTest {
         String owner = readProperty(prop, "OWNER");
         String workItemType = readProperty(prop, "WORKITEM_TYPE");
         Namespace namespace = api.namespace(owner);
-        String workItemTypeId = namespace.getWorkItemTypes()
+        WorkItemsTypeID workItemTypeId = namespace.getWorkItemTypes()
                 .getNodes()
                 .stream()
                 .filter(t -> Objects.equals(t.getName(), workItemType))

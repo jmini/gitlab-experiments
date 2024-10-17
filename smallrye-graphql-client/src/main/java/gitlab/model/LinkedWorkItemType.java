@@ -10,11 +10,11 @@ public class LinkedWorkItemType {
     /**
      * Timestamp the link was created.
      */
-    private String linkCreatedAt;
+    private Time linkCreatedAt;
     /**
      * Global ID of the link.
      */
-    private String linkId;
+    private WorkItemsRelatedWorkItemLinkID linkId;
     /**
      * Type of link.
      */
@@ -22,26 +22,26 @@ public class LinkedWorkItemType {
     /**
      * Timestamp the link was updated.
      */
-    private String linkUpdatedAt;
+    private Time linkUpdatedAt;
     /**
      * Linked work item.
      */
     private WorkItemRef workItem;
 
-    public String getLinkCreatedAt() {
+    public Time getLinkCreatedAt() {
         return linkCreatedAt;
     }
 
-    public LinkedWorkItemType setLinkCreatedAt(String linkCreatedAt) {
+    public LinkedWorkItemType setLinkCreatedAt(Time linkCreatedAt) {
         this.linkCreatedAt = linkCreatedAt;
         return this;
     }
 
-    public String getLinkId() {
+    public WorkItemsRelatedWorkItemLinkID getLinkId() {
         return linkId;
     }
 
-    public LinkedWorkItemType setLinkId(String linkId) {
+    public LinkedWorkItemType setLinkId(WorkItemsRelatedWorkItemLinkID linkId) {
         this.linkId = linkId;
         return this;
     }
@@ -55,11 +55,11 @@ public class LinkedWorkItemType {
         return this;
     }
 
-    public String getLinkUpdatedAt() {
+    public Time getLinkUpdatedAt() {
         return linkUpdatedAt;
     }
 
-    public LinkedWorkItemType setLinkUpdatedAt(String linkUpdatedAt) {
+    public LinkedWorkItemType setLinkUpdatedAt(Time linkUpdatedAt) {
         this.linkUpdatedAt = linkUpdatedAt;
         return this;
     }

@@ -18,7 +18,7 @@ public class WorkItem {
     /**
      * Timestamp of when the work item was closed.
      */
-    private String closedAt;
+    private Time closedAt;
     /**
      * Indicates the work item is confidential.
      */
@@ -26,11 +26,11 @@ public class WorkItem {
     /**
      * Timestamp of when the work item was created.
      */
-    private String createdAt;
+    private Time createdAt;
     /**
      * Global ID of the work item.
      */
-    private String id;
+    private WorkItemID id;
     /**
      * Internal ID of the work item.
      */
@@ -61,7 +61,7 @@ public class WorkItem {
     /**
      * Timestamp of when the work item was last updated.
      */
-    private String updatedAt;
+    private Time updatedAt;
     /**
      * URL of this object.
      */
@@ -86,11 +86,11 @@ public class WorkItem {
         return this;
     }
 
-    public String getClosedAt() {
+    public Time getClosedAt() {
         return closedAt;
     }
 
-    public WorkItem setClosedAt(String closedAt) {
+    public WorkItem setClosedAt(Time closedAt) {
         this.closedAt = closedAt;
         return this;
     }
@@ -104,20 +104,20 @@ public class WorkItem {
         return this;
     }
 
-    public String getCreatedAt() {
+    public Time getCreatedAt() {
         return createdAt;
     }
 
-    public WorkItem setCreatedAt(String createdAt) {
+    public WorkItem setCreatedAt(Time createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public String getId() {
+    public WorkItemID getId() {
         return id;
     }
 
-    public WorkItem setId(String id) {
+    public WorkItem setId(WorkItemID id) {
         this.id = id;
         return this;
     }
@@ -178,11 +178,11 @@ public class WorkItem {
         return this;
     }
 
-    public String getUpdatedAt() {
+    public Time getUpdatedAt() {
         return updatedAt;
     }
 
-    public WorkItem setUpdatedAt(String updatedAt) {
+    public WorkItem setUpdatedAt(Time updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }

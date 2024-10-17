@@ -29,7 +29,7 @@ public class WorkItemCreateInput {
     /**
      * Global ID of a work item type.
      */
-    private String workItemTypeId;
+    private WorkItemsTypeID workItemTypeId;
 
     public WorkItemWidgetAssigneesInput getAssigneesWidget() {
         return assigneesWidget;
@@ -67,11 +67,11 @@ public class WorkItemCreateInput {
         return this;
     }
 
-    public String getWorkItemTypeId() {
+    public WorkItemsTypeID getWorkItemTypeId() {
         return workItemTypeId;
     }
 
-    public WorkItemCreateInput setWorkItemTypeId(String workItemTypeId) {
+    public WorkItemCreateInput setWorkItemTypeId(WorkItemsTypeID workItemTypeId) {
         this.workItemTypeId = workItemTypeId;
         return this;
     }

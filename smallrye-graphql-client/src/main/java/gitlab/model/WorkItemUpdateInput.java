@@ -25,7 +25,7 @@ public class WorkItemUpdateInput {
     /**
      * Global ID of the work item.
      */
-    private String id;
+    private WorkItemID id;
     /**
      * Input for labels widget.
      */
@@ -70,11 +70,11 @@ public class WorkItemUpdateInput {
         return this;
     }
 
-    public String getId() {
+    public WorkItemID getId() {
         return id;
     }
 
-    public WorkItemUpdateInput setId(String id) {
+    public WorkItemUpdateInput setId(WorkItemID id) {
         this.id = id;
         return this;
     }

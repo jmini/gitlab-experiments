@@ -10,17 +10,17 @@ public class WorkItemType {
     /**
      * Global ID of the work item type.
      */
-    private String id;
+    private WorkItemsTypeID id;
     /**
      * Name of the work item type.
      */
     private String name;
 
-    public String getId() {
+    public WorkItemsTypeID getId() {
         return id;
     }
 
-    public WorkItemType setId(String id) {
+    public WorkItemType setId(WorkItemsTypeID id) {
         this.id = id;
         return this;
     }

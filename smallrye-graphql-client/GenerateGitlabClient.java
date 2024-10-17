@@ -77,7 +77,7 @@ class GenerateGitlabClient {
 
         Config config = new Config()
                 .setSchema(schema)
-                .setDefaultCustomScalarMapping(CustomScalarMappingStrategy.MAP_TO_STRING)
+                .setDefaultCustomScalarMapping(CustomScalarMappingStrategy.CREATE_CUSTOM_SCALAR_CLASS)
                 .setScope(new Scope()
                         .setDefaultStrategy(IncludeStrategy.INCLUDE_NONE)
                         .addFilter(new TypesFilter()
@@ -154,6 +154,16 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemUpdatePayload") //
 
                         )//
+                        .addFilter(new TypesFilter()
+                                .setTypeKind(Kind.SCALAR)
+                                .addIncludeName("Date") //
+                                .addIncludeName("Time") //
+                                .addIncludeName("LabelID") //
+                                .addIncludeName("UserID") //
+                                .addIncludeName("WorkItemID") //
+                                .addIncludeName("WorkItemsTypeID") //
+                                .addIncludeName("WorkItemsRelatedWorkItemLinkID") //
+                        ) //
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.INTERFACE)
                                 // .addIncludeName("User") //
@@ -418,8 +428,8 @@ class GenerateGitlabClient {
                                 .addIncludeName("dueDate") //
                                 // .addIncludeName("dueDateSourcingMilestone") //
                                 // .addIncludeName("dueDateSourcingWorkItem") //
-                                .addIncludeName("isFixed") //
-                                .addIncludeName("rollUp") //
+                                // .addIncludeName("isFixed") //not available in 17.3
+                                // .addIncludeName("rollUp") //not available in 17.3
                                 .addIncludeName("startDate") //
                                 // .addIncludeName("startDateSourcingMilestone") //
                                 // .addIncludeName("startDateSourcingWorkItem") //

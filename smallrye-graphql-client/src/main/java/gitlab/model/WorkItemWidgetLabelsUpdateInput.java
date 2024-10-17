@@ -11,26 +11,26 @@ public class WorkItemWidgetLabelsUpdateInput {
     /**
      * Global IDs of labels to be added to the work item.
      */
-    private List<String> addLabelIds;
+    private List<LabelID> addLabelIds;
     /**
      * Global IDs of labels to be removed from the work item.
      */
-    private List<String> removeLabelIds;
+    private List<LabelID> removeLabelIds;
 
-    public List<String> getAddLabelIds() {
+    public List<LabelID> getAddLabelIds() {
         return addLabelIds;
     }
 
-    public WorkItemWidgetLabelsUpdateInput setAddLabelIds(List<String> addLabelIds) {
+    public WorkItemWidgetLabelsUpdateInput setAddLabelIds(List<LabelID> addLabelIds) {
         this.addLabelIds = addLabelIds;
         return this;
     }
 
-    public List<String> getRemoveLabelIds() {
+    public List<LabelID> getRemoveLabelIds() {
         return removeLabelIds;
     }
 
-    public WorkItemWidgetLabelsUpdateInput setRemoveLabelIds(List<String> removeLabelIds) {
+    public WorkItemWidgetLabelsUpdateInput setRemoveLabelIds(List<LabelID> removeLabelIds) {
         this.removeLabelIds = removeLabelIds;
         return this;
     }
