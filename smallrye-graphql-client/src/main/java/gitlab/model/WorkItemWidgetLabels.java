@@ -11,9 +11,22 @@ import org.eclipse.microprofile.graphql.Name;
 public class WorkItemWidgetLabels implements WorkItemWidget {
 
     /**
+     * Labels assigned to the work item.
+     */
+    private LabelConnection labels;
+    /**
      * Widget type.
      */
     private WorkItemWidgetType type;
+
+    public LabelConnection getLabels() {
+        return labels;
+    }
+
+    public WorkItemWidgetLabels setLabels(LabelConnection labels) {
+        this.labels = labels;
+        return this;
+    }
 
     public WorkItemWidgetType getType() {
         return type;
@@ -26,7 +39,7 @@ public class WorkItemWidgetLabels implements WorkItemWidget {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type);
+        return Objects.hash(labels, type);
     }
 
     @Override
@@ -38,12 +51,12 @@ public class WorkItemWidgetLabels implements WorkItemWidget {
         if (getClass() != obj.getClass())
             return false;
         WorkItemWidgetLabels other = (WorkItemWidgetLabels) obj;
-        return Objects.equals(type, other.type);
+        return Objects.equals(labels, other.labels) && Objects.equals(type, other.type);
     }
 
     @Override
     public String toString() {
-        return "WorkItemWidgetLabels [type=" + type + "]";
+        return "WorkItemWidgetLabels [labels=" + labels + ", type=" + type + "]";
     }
 
 }

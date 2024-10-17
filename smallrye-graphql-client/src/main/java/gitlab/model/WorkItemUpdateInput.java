@@ -19,6 +19,10 @@ public class WorkItemUpdateInput {
      */
     private WorkItemWidgetDescriptionInput descriptionWidget;
     /**
+     * Input for hierarchy widget.
+     */
+    private WorkItemWidgetHierarchyUpdateInput hierarchyWidget;
+    /**
      * Global ID of the work item.
      */
     private String id;
@@ -26,6 +30,10 @@ public class WorkItemUpdateInput {
      * Input for labels widget.
      */
     private WorkItemWidgetLabelsUpdateInput labelsWidget;
+    /**
+     * Input for start and due date widget.
+     */
+    private WorkItemWidgetStartAndDueDateUpdateInput startAndDueDateWidget;
     /**
      * Close or reopen a work item.
      */
@@ -53,6 +61,15 @@ public class WorkItemUpdateInput {
         return this;
     }
 
+    public WorkItemWidgetHierarchyUpdateInput getHierarchyWidget() {
+        return hierarchyWidget;
+    }
+
+    public WorkItemUpdateInput setHierarchyWidget(WorkItemWidgetHierarchyUpdateInput hierarchyWidget) {
+        this.hierarchyWidget = hierarchyWidget;
+        return this;
+    }
+
     public String getId() {
         return id;
     }
@@ -68,6 +85,15 @@ public class WorkItemUpdateInput {
 
     public WorkItemUpdateInput setLabelsWidget(WorkItemWidgetLabelsUpdateInput labelsWidget) {
         this.labelsWidget = labelsWidget;
+        return this;
+    }
+
+    public WorkItemWidgetStartAndDueDateUpdateInput getStartAndDueDateWidget() {
+        return startAndDueDateWidget;
+    }
+
+    public WorkItemUpdateInput setStartAndDueDateWidget(WorkItemWidgetStartAndDueDateUpdateInput startAndDueDateWidget) {
+        this.startAndDueDateWidget = startAndDueDateWidget;
         return this;
     }
 
@@ -91,7 +117,7 @@ public class WorkItemUpdateInput {
 
     @Override
     public int hashCode() {
-        return Objects.hash(assigneesWidget, descriptionWidget, id, labelsWidget, stateEvent, title);
+        return Objects.hash(assigneesWidget, descriptionWidget, hierarchyWidget, id, labelsWidget, startAndDueDateWidget, stateEvent, title);
     }
 
     @Override
@@ -103,12 +129,12 @@ public class WorkItemUpdateInput {
         if (getClass() != obj.getClass())
             return false;
         WorkItemUpdateInput other = (WorkItemUpdateInput) obj;
-        return Objects.equals(assigneesWidget, other.assigneesWidget) && Objects.equals(descriptionWidget, other.descriptionWidget) && Objects.equals(id, other.id) && Objects.equals(labelsWidget, other.labelsWidget) && Objects.equals(stateEvent, other.stateEvent) && Objects.equals(title, other.title);
+        return Objects.equals(assigneesWidget, other.assigneesWidget) && Objects.equals(descriptionWidget, other.descriptionWidget) && Objects.equals(hierarchyWidget, other.hierarchyWidget) && Objects.equals(id, other.id) && Objects.equals(labelsWidget, other.labelsWidget) && Objects.equals(startAndDueDateWidget, other.startAndDueDateWidget) && Objects.equals(stateEvent, other.stateEvent) && Objects.equals(title, other.title);
     }
 
     @Override
     public String toString() {
-        return "WorkItemUpdateInput [assigneesWidget=" + assigneesWidget + ", descriptionWidget=" + descriptionWidget + ", id=" + id + ", labelsWidget=" + labelsWidget + ", stateEvent=" + stateEvent + ", title=" + title + "]";
+        return "WorkItemUpdateInput [assigneesWidget=" + assigneesWidget + ", descriptionWidget=" + descriptionWidget + ", hierarchyWidget=" + hierarchyWidget + ", id=" + id + ", labelsWidget=" + labelsWidget + ", startAndDueDateWidget=" + startAndDueDateWidget + ", stateEvent=" + stateEvent + ", title=" + title + "]";
     }
 
 }

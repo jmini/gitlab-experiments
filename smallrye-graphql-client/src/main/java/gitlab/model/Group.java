@@ -31,6 +31,10 @@ public class Group {
      * Web URL of the group.
      */
     private String webUrl;
+    /**
+     * Work item types available to the group.
+     */
+    private WorkItemTypeConnection workItemTypes;
 
     public String getFullName() {
         return fullName;
@@ -86,9 +90,18 @@ public class Group {
         return this;
     }
 
+    public WorkItemTypeConnection getWorkItemTypes() {
+        return workItemTypes;
+    }
+
+    public Group setWorkItemTypes(WorkItemTypeConnection workItemTypes) {
+        this.workItemTypes = workItemTypes;
+        return this;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(fullName, fullPath, id, labels, name, webUrl);
+        return Objects.hash(fullName, fullPath, id, labels, name, webUrl, workItemTypes);
     }
 
     @Override
@@ -100,12 +113,12 @@ public class Group {
         if (getClass() != obj.getClass())
             return false;
         Group other = (Group) obj;
-        return Objects.equals(fullName, other.fullName) && Objects.equals(fullPath, other.fullPath) && Objects.equals(id, other.id) && Objects.equals(labels, other.labels) && Objects.equals(name, other.name) && Objects.equals(webUrl, other.webUrl);
+        return Objects.equals(fullName, other.fullName) && Objects.equals(fullPath, other.fullPath) && Objects.equals(id, other.id) && Objects.equals(labels, other.labels) && Objects.equals(name, other.name) && Objects.equals(webUrl, other.webUrl) && Objects.equals(workItemTypes, other.workItemTypes);
     }
 
     @Override
     public String toString() {
-        return "Group [fullName=" + fullName + ", fullPath=" + fullPath + ", id=" + id + ", labels=" + labels + ", name=" + name + ", webUrl=" + webUrl + "]";
+        return "Group [fullName=" + fullName + ", fullPath=" + fullPath + ", id=" + id + ", labels=" + labels + ", name=" + name + ", webUrl=" + webUrl + ", workItemTypes=" + workItemTypes + "]";
     }
 
 }

@@ -360,7 +360,7 @@ class GenerateGitlabClient {
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("WorkItemWidgetLabels")
                                 // .addIncludeName("allowsScopedLabels") //
-                                // .addIncludeName("labels") //
+                                .addIncludeName("labels") //
                                 .addIncludeName("type") //
                         ) //
                         .addFilter(new FieldsFilter()
@@ -415,12 +415,12 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("WorkItemWidgetStartAndDueDate")
-                                // .addIncludeName("dueDate") //
+                                .addIncludeName("dueDate") //
                                 // .addIncludeName("dueDateSourcingMilestone") //
                                 // .addIncludeName("dueDateSourcingWorkItem") //
-                                // .addIncludeName("isFixed") //
-                                // .addIncludeName("rollUp") //
-                                // .addIncludeName("startDate") //
+                                .addIncludeName("isFixed") //
+                                .addIncludeName("rollUp") //
+                                .addIncludeName("startDate") //
                                 // .addIncludeName("startDateSourcingMilestone") //
                                 // .addIncludeName("startDateSourcingWorkItem") //
                                 .addIncludeName("type") //
@@ -680,6 +680,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("name") //
                                 .addIncludeName("webUrl") //
                                 .addIncludeName("labels") //
+                                .addIncludeName("workItemTypes") //
                         //XXX .addIncludeName("workItem") //
                         ) //
                         .addFilter(new FieldsFilter()
@@ -848,6 +849,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemWidgetDescriptionInput") //
                                 .addIncludeName("WorkItemWidgetHierarchyUpdateInput") //
                                 .addIncludeName("WorkItemWidgetLabelsUpdateInput") //
+                                .addIncludeName("WorkItemWidgetStartAndDueDateUpdateInput") //
                         ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
@@ -870,6 +872,8 @@ class GenerateGitlabClient {
                                 .addIncludeName("assigneesWidget") //
                                 .addIncludeName("descriptionWidget") //
                                 .addIncludeName("labelsWidget") //
+                                .addIncludeName("hierarchyWidget") //
+                                .addIncludeName("startAndDueDateWidget") //
                                 .addIncludeName("title") //
                                 .addIncludeName("id") //
                                 .addIncludeName("stateEvent") //
@@ -903,6 +907,13 @@ class GenerateGitlabClient {
                                 .setTypeName("WorkItemWidgetLabelsUpdateInput")
                                 .addIncludeName("addLabelIds") //
                                 .addIncludeName("removeLabelIds") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetStartAndDueDateUpdateInput")
+                                .addIncludeName("dueDate") //
+                                .addIncludeName("isFixed") //
+                                .addIncludeName("startDate") //
                         ) //
                 )
                 .setModelPackageName("gitlab.model")
