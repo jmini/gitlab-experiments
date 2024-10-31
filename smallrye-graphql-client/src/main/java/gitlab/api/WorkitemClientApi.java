@@ -12,11 +12,13 @@ import org.eclipse.microprofile.graphql.Source;
 import gitlab.model.Group;
 import gitlab.model.Namespace;
 import gitlab.model.Project;
+import gitlab.model.WorkItem;
 import gitlab.model.WorkItemAddLinkedItemsInput;
 import gitlab.model.WorkItemAddLinkedItemsPayload;
 import gitlab.model.WorkItemConnection;
 import gitlab.model.WorkItemCreateInput;
 import gitlab.model.WorkItemCreatePayload;
+import gitlab.model.WorkItemID;
 import gitlab.model.WorkItemRemoveLinkedItemsInput;
 import gitlab.model.WorkItemRemoveLinkedItemsPayload;
 import gitlab.model.WorkItemUpdateInput;
@@ -44,6 +46,15 @@ public interface WorkitemClientApi {
      */
     @Query("project")
     Project project(@Name("fullPath") @NonNull @Id String fullPath, @NestedParameter("labels") @Name("includeAncestorGroups") boolean labelsIncludeAncestorGroups, @NestedParameter("labels") @Name("after") String labelsAfter);
+
+    /**
+     * Find a work item. Introduced in GitLab 15.1: **Status**: Experiment.
+     *
+     * @deprecated **Status**: Experiment. Introduced in GitLab 15.1.
+     */
+    @Deprecated
+    @Query("workItem")
+    WorkItem workItem(@Name("id") @NonNull WorkItemID id);
 
     /**
      * Find work items by their reference. Introduced in GitLab 16.7: **Status**: Experiment.

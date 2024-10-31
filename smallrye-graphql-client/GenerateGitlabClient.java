@@ -193,10 +193,18 @@ class GenerateGitlabClient {
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName(schema.getQueryType()
                                         .getName())
+                                .addIncludeName("workItem") //
                                 .addIncludeName("workItemsByReference") //
                                 .addIncludeName("namespace") //
                                 .addIncludeName("group") //
                                 .addIncludeName("project") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getQueryType()
+                                        .getName())
+                                .setFieldName("workItem") //
+                                .addIncludeName("id") //
                         ) //
                         .addFilter(new ArgsFilter()
                                 .setTypeKind(Kind.OBJECT)
