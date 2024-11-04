@@ -26,7 +26,7 @@ import gitlab.model.WorkItemUpdatePayload;
 import io.smallrye.graphql.client.typesafe.api.GraphQLClientApi;
 import io.smallrye.graphql.client.typesafe.api.NestedParameter;
 
-@GraphQLClientApi(configKey = "gitlab", endpoint = "https://gitlab.com/api/graphql")
+@GraphQLClientApi(configKey = "gitlab")
 public interface WorkitemClientApi {
 
     /**
