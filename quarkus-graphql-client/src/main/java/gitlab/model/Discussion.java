@@ -8,10 +8,6 @@ import org.eclipse.microprofile.graphql.Name;
 public class Discussion {
 
     /**
-     * Timestamp of the discussion's creation.
-     */
-    private Time createdAt;
-    /**
      * ID of the discussion.
      */
     private DiscussionID id;
@@ -19,15 +15,6 @@ public class Discussion {
      * All notes in the discussion.
      */
     private NoteConnection notes;
-
-    public Time getCreatedAt() {
-        return createdAt;
-    }
-
-    public Discussion setCreatedAt(Time createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
 
     public DiscussionID getId() {
         return id;
@@ -49,7 +36,7 @@ public class Discussion {
 
     @Override
     public int hashCode() {
-        return Objects.hash(createdAt, id, notes);
+        return Objects.hash(id, notes);
     }
 
     @Override
@@ -61,12 +48,12 @@ public class Discussion {
         if (getClass() != obj.getClass())
             return false;
         Discussion other = (Discussion) obj;
-        return Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id) && Objects.equals(notes, other.notes);
+        return Objects.equals(id, other.id) && Objects.equals(notes, other.notes);
     }
 
     @Override
     public String toString() {
-        return "Discussion [createdAt=" + createdAt + ", id=" + id + ", notes=" + notes + "]";
+        return "Discussion [id=" + id + ", notes=" + notes + "]";
     }
 
 }

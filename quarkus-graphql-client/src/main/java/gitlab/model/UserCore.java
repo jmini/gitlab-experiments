@@ -11,10 +11,6 @@ import org.eclipse.microprofile.graphql.Name;
 public class UserCore {
 
     /**
-     * Indicates if the user is active.
-     */
-    private Boolean active;
-    /**
      * ID of the user.
      */
     private String id;
@@ -22,15 +18,6 @@ public class UserCore {
      * Username of the user. Unique within this instance of GitLab.
      */
     private String username;
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public UserCore setActive(Boolean active) {
-        this.active = active;
-        return this;
-    }
 
     public String getId() {
         return id;
@@ -52,7 +39,7 @@ public class UserCore {
 
     @Override
     public int hashCode() {
-        return Objects.hash(active, id, username);
+        return Objects.hash(id, username);
     }
 
     @Override
@@ -64,12 +51,12 @@ public class UserCore {
         if (getClass() != obj.getClass())
             return false;
         UserCore other = (UserCore) obj;
-        return Objects.equals(active, other.active) && Objects.equals(id, other.id) && Objects.equals(username, other.username);
+        return Objects.equals(id, other.id) && Objects.equals(username, other.username);
     }
 
     @Override
     public String toString() {
-        return "UserCore [active=" + active + ", id=" + id + ", username=" + username + "]";
+        return "UserCore [id=" + id + ", username=" + username + "]";
     }
 
 }

@@ -28,12 +28,9 @@ public class GreetingResource {
     @Path("/hardcoded")
     @Produces(MediaType.TEXT_PLAIN)
     public String read() {
-        String p = "tech-marketing/demos/gitlab-agile-demo/initech";
+        String p = "stage/main/product-management";
         List<String> r = List.of(
-                "tech-marketing/demos/gitlab-agile-demo/initech/music-store&2",
-                "tech-marketing/demos/gitlab-agile-demo/initech&2",
-                "tech-marketing/demos/gitlab-agile-demo/initech&5",
-                "tech-marketing/demos/gitlab-agile-demo/initech/music-store/parent-portal#2");
+                "&1");
         WorkItemConnection response = api.workItemsByReference(p, r);
         return response.toString();
     }
