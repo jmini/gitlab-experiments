@@ -162,6 +162,8 @@ class GenerateGitlabClient {
                                 .addIncludeName("Time") //
                                 .addIncludeName("LabelID") //
                                 .addIncludeName("UserID") //
+                                .addIncludeName("DiscussionID") //
+                                .addIncludeName("NoteID") //
                                 .addIncludeName("WorkItemID") //
                                 .addIncludeName("WorkItemsTypeID") //
                                 .addIncludeName("WorkItemsRelatedWorkItemLinkID") //
@@ -175,7 +177,7 @@ class GenerateGitlabClient {
                                 // .addIncludeName("WorkItemWidgetDefinition") //
                                 .addIncludeName("WorkItemWidget") //
                         ) //
-                        //                        .addFilter(new TypesFilter()
+                        // .addFilter(new TypesFilter()
                         // .setTypeKind(Kind.UNION) //
                         // .addIncludeName("Issuable")) //
                         .addFilter(new TypesFilter()
@@ -184,6 +186,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemState") //
                                 .addIncludeName("WorkItemWidgetType") //
                                 .addIncludeName("MilestoneStateEnum") //
+                                .addIncludeName("NotesFilterType") //
                                 // ---- MUTATION objects ----
                                 .addIncludeName("WorkItemStateEvent") //
                                 .addIncludeName("RelativePositionType") //
@@ -272,8 +275,8 @@ class GenerateGitlabClient {
                                 // .addIncludeName("description") //
                                 // .addIncludeName("fullName") //
                                 .addIncludeName("fullPath") //
+                                // .addIncludeName("workItemTypes") // reduce complexity
                                 .addIncludeName("visibility") //
-                                .addIncludeName("workItemTypes") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -283,11 +286,11 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("UserCore")
-                                .addIncludeName("id") //
-                                .addIncludeName("username") //
                                 // .addIncludeName("webUrl") //
                                 // .addIncludeName("publicEmail") //
-                                .addIncludeName("active") //
+                                // .addIncludeName("active") //
+                                .addIncludeName("id") //
+                                .addIncludeName("username") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -403,7 +406,7 @@ class GenerateGitlabClient {
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("WorkItemWidgetNotes")
                                 // .addIncludeName("discussionLocked") //
-                                // .addIncludeName("discussions") //
+                                .addIncludeName("discussions") //
                                 .addIncludeName("type") //
                         ) //
                         .addFilter(new FieldsFilter()
@@ -597,12 +600,12 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("AwardEmoji")
-                                .addIncludeName("description") //
-                                .addIncludeName("emoji") //
+                                // .addIncludeName("description") //
+                                // .addIncludeName("emoji") //
                                 .addIncludeName("name") //
                                 .addIncludeName("unicode") //
                                 .addIncludeName("unicodeVersion") //
-                                .addIncludeName("user") //
+                        // .addIncludeName("user") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -673,15 +676,15 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("Discussion")
-                                .addIncludeName("createdAt") //
+                                // .addIncludeName("createdAt") //
                                 .addIncludeName("id") //
                                 // .addIncludeName("noteable") //
+                                //.addIncludeName("replyId") //
+                                // .addIncludeName("resolvable") //
+                                // .addIncludeName("resolved") //
+                                // .addIncludeName("resolvedAt") //
+                                // .addIncludeName("resolvedBy") //
                                 .addIncludeName("notes") //
-                                .addIncludeName("replyId") //
-                                .addIncludeName("resolvable") //
-                                .addIncludeName("resolved") //
-                                .addIncludeName("resolvedAt") //
-                                .addIncludeName("resolvedBy") //
                         ) //
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -799,20 +802,20 @@ class GenerateGitlabClient {
                                 .addIncludeName("author") //
                                 .addIncludeName("awardEmoji") //
                                 .addIncludeName("body") //
-                                .addIncludeName("createdAt") //
-                                .addIncludeName("discussion") //
+                                // .addIncludeName("createdAt") //
+                                // .addIncludeName("discussion") //
                                 .addIncludeName("id") //
-                                .addIncludeName("internal") //
-                                .addIncludeName("lastEditedAt") //
-                                .addIncludeName("lastEditedBy") //
-                                .addIncludeName("resolvable") //
-                                .addIncludeName("resolved") //
-                                .addIncludeName("resolvedAt") //
-                                .addIncludeName("system") //
-                                .addIncludeName("systemNoteIconName") //
-                                // .addIncludeName("systemNoteMetadata") //
-                                .addIncludeName("updatedAt") //
-                                .addIncludeName("url") //
+                        // .addIncludeName("internal") //
+                        // .addIncludeName("lastEditedAt") //
+                        // .addIncludeName("lastEditedBy") //
+                        // .addIncludeName("resolvable") //
+                        // .addIncludeName("resolved") //
+                        // .addIncludeName("resolvedAt") //
+                        // .addIncludeName("systemNoteIconName") //
+                        // .addIncludeName("systemNoteMetadata") //
+                        // .addIncludeName("updatedAt") //
+                        // .addIncludeName("url") //
+                        // .addIncludeName("system") //
                         ) //
                         // --- ADDITIONAL TYPES ---
                         .addFilter(new FieldsFilter()

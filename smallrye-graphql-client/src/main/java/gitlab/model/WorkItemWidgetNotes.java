@@ -11,9 +11,22 @@ import org.eclipse.microprofile.graphql.Name;
 public class WorkItemWidgetNotes implements WorkItemWidget {
 
     /**
+     * Notes on this work item.
+     */
+    private DiscussionConnection discussions;
+    /**
      * Widget type.
      */
     private WorkItemWidgetType type;
+
+    public DiscussionConnection getDiscussions() {
+        return discussions;
+    }
+
+    public WorkItemWidgetNotes setDiscussions(DiscussionConnection discussions) {
+        this.discussions = discussions;
+        return this;
+    }
 
     public WorkItemWidgetType getType() {
         return type;
@@ -26,7 +39,7 @@ public class WorkItemWidgetNotes implements WorkItemWidget {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type);
+        return Objects.hash(discussions, type);
     }
 
     @Override
@@ -38,12 +51,12 @@ public class WorkItemWidgetNotes implements WorkItemWidget {
         if (getClass() != obj.getClass())
             return false;
         WorkItemWidgetNotes other = (WorkItemWidgetNotes) obj;
-        return Objects.equals(type, other.type);
+        return Objects.equals(discussions, other.discussions) && Objects.equals(type, other.type);
     }
 
     @Override
     public String toString() {
-        return "WorkItemWidgetNotes [type=" + type + "]";
+        return "WorkItemWidgetNotes [discussions=" + discussions + ", type=" + type + "]";
     }
 
 }
