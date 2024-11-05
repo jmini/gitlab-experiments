@@ -75,6 +75,18 @@ class GenerateGitlabClient {
         schema.getTypes()
                 .add(createWorkItemRef());
 
+        //See: https://gitlab.com/gitlab-org/gitlab/-/issues/499834
+        Type label = SchemaUtil.getTypeByKindAndName(schema, Kind.OBJECT, "Label");
+        SchemaUtil.getFieldByName(schema, label, "id")
+                .getType()
+                .getOfType()
+                .setName("LabelID");
+        Type userCore = SchemaUtil.getTypeByKindAndName(schema, Kind.OBJECT, "UserCore");
+        SchemaUtil.getFieldByName(schema, userCore, "id")
+                .getType()
+                .getOfType()
+                .setName("UserID");
+
         Config config = new Config()
                 .setSchema(schema)
                 .setDefaultCustomScalarMapping(CustomScalarMappingStrategy.CREATE_CUSTOM_SCALAR_CLASS)

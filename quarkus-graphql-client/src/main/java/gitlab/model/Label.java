@@ -18,7 +18,7 @@ public class Label {
     /**
      * Label ID.
      */
-    private String id;
+    private LabelID id;
     /**
      * Text color of the label.
      */
@@ -46,11 +46,11 @@ public class Label {
         return this;
     }
 
-    public String getId() {
+    public LabelID getId() {
         return id;
     }
 
-    public Label setId(String id) {
+    public Label setId(LabelID id) {
         this.id = id;
         return this;
     }

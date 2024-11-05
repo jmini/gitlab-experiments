@@ -13,17 +13,17 @@ public class UserCore {
     /**
      * ID of the user.
      */
-    private String id;
+    private UserID id;
     /**
      * Username of the user. Unique within this instance of GitLab.
      */
     private String username;
 
-    public String getId() {
+    public UserID getId() {
         return id;
     }
 
-    public UserCore setId(String id) {
+    public UserCore setId(UserID id) {
         this.id = id;
         return this;
     }
