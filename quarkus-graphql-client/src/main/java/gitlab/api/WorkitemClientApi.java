@@ -11,6 +11,7 @@ import org.eclipse.microprofile.graphql.Source;
 
 import gitlab.model.Group;
 import gitlab.model.Namespace;
+import gitlab.model.NotesFilterType;
 import gitlab.model.Project;
 import gitlab.model.WorkItem;
 import gitlab.model.WorkItemAddLinkedItemsInput;
@@ -63,7 +64,7 @@ public interface WorkitemClientApi {
      */
     @Deprecated
     @Query("workItemsByReference")
-    WorkItemConnection workItemsByReference(@Name("contextNamespacePath") @Id String contextNamespacePath, @Name("refs") @NonNull List<@NonNull String> refs);
+    WorkItemConnection workItemsByReference(@Name("contextNamespacePath") @Id String contextNamespacePath, @Name("refs") @NonNull List<@NonNull String> refs, @Name("filter") @NestedParameter("nodes.widgets.discussions") NotesFilterType filter);
 
     /**
      * Add linked items to the work item. Introduced in GitLab 16.3: **Status**: Experiment.
