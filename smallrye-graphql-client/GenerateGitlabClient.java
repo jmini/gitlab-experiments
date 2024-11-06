@@ -167,10 +167,13 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemAddLinkedItemsPayload") //
                                 .addIncludeName("WorkItemRemoveLinkedItemsPayload") //
                                 .addIncludeName("CreateNotePayload") //
+                                .addIncludeName("UpdateNotePayload") //
+                                .addIncludeName("AwardEmojiAddPayload") //
 
                         )//
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.SCALAR)
+                                .addIncludeName("AwardableID") //
                                 .addIncludeName("Date") //
                                 .addIncludeName("Time") //
                                 .addIncludeName("LabelID") //
@@ -865,6 +868,8 @@ class GenerateGitlabClient {
                                 .addIncludeName("workItemAddLinkedItems") //
                                 .addIncludeName("workItemRemoveLinkedItems") //
                                 .addIncludeName("createNote") //
+                                .addIncludeName("updateNote") //
+                                .addIncludeName("awardEmojiAdd") //
                         ) //
                         .addFilter(new ArgsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -901,6 +906,20 @@ class GenerateGitlabClient {
                                 .setFieldName("createNote") //
                                 .addIncludeName("input") //
                         ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .setFieldName("updateNote") //
+                                .addIncludeName("input") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .setFieldName("awardEmojiAdd") //
+                                .addIncludeName("input") //
+                        ) //
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
                                 .addIncludeName("WorkItemCreateInput") //
@@ -915,6 +934,8 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemAddLinkedItemsInput") //
                                 .addIncludeName("WorkItemRemoveLinkedItemsInput") //
                                 .addIncludeName("CreateNoteInput") //
+                                .addIncludeName("UpdateNoteInput") //
+                                .addIncludeName("AwardEmojiAddInput") //
                         ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
@@ -969,6 +990,18 @@ class GenerateGitlabClient {
                                 .addIncludeName("errors") //
                                 .addIncludeName("note") //
                         ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("UpdateNotePayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("note") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("AwardEmojiAddPayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("awardEmoji") //
+                        ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
                                 .setTypeName("WorkItemWidgetAssigneesInput")
@@ -1021,6 +1054,18 @@ class GenerateGitlabClient {
                                 .addIncludeName("internal") //
                                 .addIncludeName("discussionId") //
                                 .addIncludeName("mergeRequestDiffHeadSha") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("UpdateNoteInput")
+                                .addIncludeName("id") //
+                                .addIncludeName("body") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("AwardEmojiAddInput")
+                                .addIncludeName("awardableId") //
+                                .addIncludeName("name") //
                         ) //
                 )
                 .setModelPackageName("gitlab.model")
