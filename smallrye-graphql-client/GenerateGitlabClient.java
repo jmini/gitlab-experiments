@@ -168,6 +168,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemRemoveLinkedItemsPayload") //
                                 .addIncludeName("CreateNotePayload") //
                                 .addIncludeName("UpdateNotePayload") //
+                                .addIncludeName("DestroyNotePayload") //
                                 .addIncludeName("AwardEmojiAddPayload") //
 
                         )//
@@ -869,6 +870,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("workItemRemoveLinkedItems") //
                                 .addIncludeName("createNote") //
                                 .addIncludeName("updateNote") //
+                                .addIncludeName("destroyNote") //
                                 .addIncludeName("awardEmojiAdd") //
                         ) //
                         .addFilter(new ArgsFilter()
@@ -917,6 +919,13 @@ class GenerateGitlabClient {
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName(schema.getMutationType()
                                         .getName())
+                                .setFieldName("destroyNote") //
+                                .addIncludeName("input") //
+                        ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
                                 .setFieldName("awardEmojiAdd") //
                                 .addIncludeName("input") //
                         ) //
@@ -935,6 +944,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemRemoveLinkedItemsInput") //
                                 .addIncludeName("CreateNoteInput") //
                                 .addIncludeName("UpdateNoteInput") //
+                                .addIncludeName("DestroyNoteInput") //
                                 .addIncludeName("AwardEmojiAddInput") //
                         ) //
                         .addFilter(new InputFieldsFilter()
@@ -993,6 +1003,12 @@ class GenerateGitlabClient {
                         .addFilter(new FieldsFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .setTypeName("UpdateNotePayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("note") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("DestroyNotePayload")
                                 .addIncludeName("errors") //
                                 .addIncludeName("note") //
                         ) //
@@ -1060,6 +1076,11 @@ class GenerateGitlabClient {
                                 .setTypeName("UpdateNoteInput")
                                 .addIncludeName("id") //
                                 .addIncludeName("body") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("DestroyNoteInput")
+                                .addIncludeName("id") //
                         ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)

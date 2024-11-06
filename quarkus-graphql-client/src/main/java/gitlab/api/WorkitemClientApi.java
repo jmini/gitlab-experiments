@@ -13,6 +13,8 @@ import gitlab.model.AwardEmojiAddInput;
 import gitlab.model.AwardEmojiAddPayload;
 import gitlab.model.CreateNoteInput;
 import gitlab.model.CreateNotePayload;
+import gitlab.model.DestroyNoteInput;
+import gitlab.model.DestroyNotePayload;
 import gitlab.model.Group;
 import gitlab.model.Namespace;
 import gitlab.model.NotesFilterType;
@@ -83,6 +85,9 @@ public interface WorkitemClientApi {
      */
     @Mutation("createNote")
     CreateNotePayload createNote(@Name("input") @NonNull @Source CreateNoteInput input);
+
+    @Mutation("destroyNote")
+    DestroyNotePayload destroyNote(@Name("input") @NonNull @Source DestroyNoteInput input);
 
     /**
      * Updates a Note.
