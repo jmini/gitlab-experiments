@@ -166,6 +166,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemUpdatePayload") //
                                 .addIncludeName("WorkItemAddLinkedItemsPayload") //
                                 .addIncludeName("WorkItemRemoveLinkedItemsPayload") //
+                                .addIncludeName("CreateNotePayload") //
 
                         )//
                         .addFilter(new TypesFilter()
@@ -175,6 +176,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("LabelID") //
                                 .addIncludeName("UserID") //
                                 .addIncludeName("DiscussionID") //
+                                .addIncludeName("NoteableID") //
                                 .addIncludeName("NoteID") //
                                 .addIncludeName("WorkItemID") //
                                 .addIncludeName("WorkItemsTypeID") //
@@ -862,6 +864,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("workItemUpdate") //
                                 .addIncludeName("workItemAddLinkedItems") //
                                 .addIncludeName("workItemRemoveLinkedItems") //
+                                .addIncludeName("createNote") //
                         ) //
                         .addFilter(new ArgsFilter()
                                 .setTypeKind(Kind.OBJECT)
@@ -891,6 +894,13 @@ class GenerateGitlabClient {
                                 .setFieldName("workItemRemoveLinkedItems") //
                                 .addIncludeName("input") //
                         ) //
+                        .addFilter(new ArgsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(schema.getMutationType()
+                                        .getName())
+                                .setFieldName("createNote") //
+                                .addIncludeName("input") //
+                        ) //
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
                                 .addIncludeName("WorkItemCreateInput") //
@@ -904,6 +914,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemWidgetStartAndDueDateUpdateInput") //
                                 .addIncludeName("WorkItemAddLinkedItemsInput") //
                                 .addIncludeName("WorkItemRemoveLinkedItemsInput") //
+                                .addIncludeName("CreateNoteInput") //
                         ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
@@ -952,6 +963,12 @@ class GenerateGitlabClient {
                                 .addIncludeName("message") //
                                 .addIncludeName("workItem") //
                         ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("CreateNotePayload")
+                                .addIncludeName("errors") //
+                                .addIncludeName("note") //
+                        ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
                                 .setTypeName("WorkItemWidgetAssigneesInput")
@@ -995,6 +1012,15 @@ class GenerateGitlabClient {
                                 .setTypeName("WorkItemRemoveLinkedItemsInput")
                                 .addIncludeName("id") //
                                 .addIncludeName("workItemsIds") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("CreateNoteInput")
+                                .addIncludeName("noteableId") //
+                                .addIncludeName("body") //
+                                .addIncludeName("internal") //
+                                .addIncludeName("discussionId") //
+                                .addIncludeName("mergeRequestDiffHeadSha") //
                         ) //
                 )
                 .setModelPackageName("gitlab.model")

@@ -9,6 +9,8 @@ import org.eclipse.microprofile.graphql.NonNull;
 import org.eclipse.microprofile.graphql.Query;
 import org.eclipse.microprofile.graphql.Source;
 
+import gitlab.model.CreateNoteInput;
+import gitlab.model.CreateNotePayload;
 import gitlab.model.Group;
 import gitlab.model.Namespace;
 import gitlab.model.Project;
@@ -64,6 +66,15 @@ public interface WorkitemClientApi {
     @Deprecated
     @Query("workItemsByReference")
     WorkItemConnection workItemsByReference(@Name("contextNamespacePath") @Id String contextNamespacePath, @Name("refs") @NonNull List<@NonNull String> refs);
+
+    /**
+     * Creates a Note.
+     * If the body of the Note contains only quick actions,
+     * the Note will be destroyed during an update, and no Note will be
+     * returned.
+     */
+    @Mutation("createNote")
+    CreateNotePayload createNote(@Name("input") @NonNull @Source CreateNoteInput input);
 
     /**
      * Add linked items to the work item. Introduced in GitLab 16.3: **Status**: Experiment.
