@@ -120,6 +120,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemWidgetStatus")
                                 .addIncludeName("WorkItemWidgetTimeTracking")
                                 .addIncludeName("WorkItemWidgetWeight")
+                                .addIncludeName("WorkItemWidgetEmailParticipants")
                                 .addIncludeName("UserCoreConnection")
                                 .addIncludeName("LabelConnection")
                                 .addIncludeName("PageInfo")
@@ -487,6 +488,11 @@ class GenerateGitlabClient {
                                 // .addIncludeName("rolledUpWeight") //
                                 // .addIncludeName("weight") //
                                 // .addIncludeName("widgetDefinition") //
+                                .addIncludeName("type") //
+                        ) //
+                        .addFilter(new FieldsFilter()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName("WorkItemWidgetEmailParticipants")
                                 .addIncludeName("type") //
                         ) //
                         .addFilter(new FieldsFilter()

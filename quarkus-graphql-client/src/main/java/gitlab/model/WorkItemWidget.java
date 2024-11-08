@@ -16,6 +16,7 @@ import jakarta.json.bind.annotation.JsonbTypeInfo;
         @JsonbSubtype(alias = "WorkItemWidgetDescription", type = WorkItemWidgetDescription.class),
         @JsonbSubtype(alias = "WorkItemWidgetDesigns", type = WorkItemWidgetDesigns.class),
         @JsonbSubtype(alias = "WorkItemWidgetDevelopment", type = WorkItemWidgetDevelopment.class),
+        @JsonbSubtype(alias = "WorkItemWidgetEmailParticipants", type = WorkItemWidgetEmailParticipants.class),
         @JsonbSubtype(alias = "WorkItemWidgetHealthStatus", type = WorkItemWidgetHealthStatus.class),
         @JsonbSubtype(alias = "WorkItemWidgetHierarchy", type = WorkItemWidgetHierarchy.class),
         @JsonbSubtype(alias = "WorkItemWidgetIteration", type = WorkItemWidgetIteration.class),
@@ -29,7 +30,6 @@ import jakarta.json.bind.annotation.JsonbTypeInfo;
         @JsonbSubtype(alias = "WorkItemWidgetStartAndDueDate", type = WorkItemWidgetStartAndDueDate.class),
         @JsonbSubtype(alias = "WorkItemWidgetStatus", type = WorkItemWidgetStatus.class),
         @JsonbSubtype(alias = "WorkItemWidgetTimeTracking", type = WorkItemWidgetTimeTracking.class),
-        @JsonbSubtype(alias = "WorkItemWidgetEmailParticipants", type = WorkItemWidgetEmailParticipants.class),
         @JsonbSubtype(alias = "WorkItemWidgetWeight", type = WorkItemWidgetWeight.class)
 })
 @Name("WorkItemWidget")
