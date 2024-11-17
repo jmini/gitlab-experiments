@@ -2,11 +2,11 @@ package gitlab;
 
 import java.util.List;
 
-import gitlab.api.WorkitemClientApi;
-import gitlab.model.Group;
-import gitlab.model.NotesFilterType;
-import gitlab.model.Project;
-import gitlab.model.WorkItemConnection;
+import graphql.gitlab.api.WorkitemClientApi;
+import graphql.gitlab.model.Group;
+import graphql.gitlab.model.NotesFilterType;
+import graphql.gitlab.model.Project;
+import graphql.gitlab.model.WorkItemConnection;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
