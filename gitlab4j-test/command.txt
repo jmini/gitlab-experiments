@@ -54,6 +54,14 @@ With:
 
 File to include `*.java`
 
+--------
+
+Build all with jbang:
+
+```
+find . -name '*.java' -exec jbang build {} \;
+```
+
 ==========================================
 
 Have a look at the PR https://github.com/gitlab4j/gitlab4j-api/pull/0000 (feel free to review it and give feedback)

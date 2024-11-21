@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/simon-weimann/gitlab4j-api/commit/7842c72bad980f2e582b649a91fce326c7dba7e1
+//DEPS https://github.com/gitlab4j/gitlab4j-api/commit/5805b41bae64b6c287abdbd51f63ce84d1ec8b90
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -39,8 +39,11 @@ public class GroupScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
-        GET_GROUP
+        GET_GROUP, GET_GROUP_LABELS, GET_GROUP_UPLOADS
     }
 
     @Override
@@ -57,13 +60,25 @@ public class GroupScript implements Callable<Integer> {
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case GET_GROUP:
                 ensureExists(group, "group");
-                var result = gitLabApi.getGroupApi()
+                var groupResponse = gitLabApi.getGroupApi()
                         .getGroup(idOrPath(group));
-                System.out.println(result);
+                System.out.println(groupResponse);
+                break;
+            case GET_GROUP_LABELS:
+                ensureExists(group, "group");
+                var labelsResponse = gitLabApi.getLabelsApi()
+                        .getGroupLabels(idOrPath(group));
+                System.out.println(labelsResponse);
+                break;
+            case GET_GROUP_UPLOADS:
+                ensureExists(group, "group");
+                var uploadsResponse = gitLabApi.getGroupApi()
+                        .getUploadFiles(idOrPath(group));
+                System.out.println(uploadsResponse);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected value: " + action);
@@ -71,6 +86,15 @@ public class GroupScript implements Callable<Integer> {
         }
         return 0;
     }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
+    }
+
 
     private void ensureExists(Object value, String optionName) {
         if (value == null) {

@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/c3981f425828088f6d8f25d1435b5c2953fc1a35
+//DEPS https://github.com/jmini/gitlab4j-api/commit/436fb4edadb6b72641dbf836ee4fdb792ac0ab32
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -99,7 +99,7 @@ public class IssueScript implements Callable<Integer> {
             case GET_LINKED_ISSUES:
                 ensureExists(project, "project");
                 ensureExists(issueIid, "issue");
-                List<Issue> linkedIssue = gitLabApi.getIssuesApi()
+                var linkedIssue = gitLabApi.getIssuesApi()
                         .getIssueLinks(idOrPath(project), issueIid);
                 System.out.println(linkedIssue);
                 break;

@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:5.4.0
+//DEPS https://github.com/gitlab4j/gitlab4j-api/commit/5805b41bae64b6c287abdbd51f63ce84d1ec8b90
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -31,6 +31,9 @@ class FileUploadScript implements Callable<Integer> {
     @Option(names = { "-p", "--project" }, description = "project (id or path)")
     private String project;
 
+    @Option(names = { "-g", "--group" }, description = "group")
+    private String group;
+
     @Option(names = { "-f", "--file" }, description = "Path to the file to uplaod")
     private String filePath;
 
@@ -39,6 +42,9 @@ class FileUploadScript implements Callable<Integer> {
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
+
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
 
     @Override
     public Integer call() throws Exception {
@@ -59,30 +65,40 @@ class FileUploadScript implements Callable<Integer> {
             throw new IllegalStateException("Can not find file: " + fileToUpload.toAbsolutePath());
         }
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
-            projectIdMandatory();
-            //            FileUpload uplaodedFile = gitLabApi.getProjectApi()
-            //                    .uploadFile(idOrPath(projectId), fileToUpload.toFile());
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             if (filename == null) {
                 filename = fileToUpload.getFileName()
                         .toString();
             }
-            FileUpload uplaodedFile = gitLabApi.getProjectApi()
-                    .uploadFile(idOrPath(project), Files.newInputStream(fileToUpload), filename, null);
-            System.out.println(uplaodedFile);
+            if(project == null && group == null) {
+                throw new IllegalStateException("Project or group is mandatory");
+            } else if(project != null && group != null) {
+                throw new IllegalStateException("Project and group can't be set at the same time");
+            } else if(project != null) {
+                FileUpload uplaodedFile = gitLabApi.getProjectApi()
+                        .uploadFile(idOrPath(project), Files.newInputStream(fileToUpload), filename, null);
+                System.out.println(uplaodedFile);
+            } else if(group != null) {
+                FileUpload uplaodedFile = gitLabApi.getGroupApi()
+                        .uploadFile(idOrPath(group), Files.newInputStream(fileToUpload), filename, null);
+                System.out.println(uplaodedFile);
+            }
         }
         return 0;
     }
 
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
+    }
+
+
     private void filePathMandatory() {
         if (filePath == null) {
             throw new IllegalStateException("File is mandatory");
-        }
-    }
-
-    private void projectIdMandatory() {
-        if (project == null) {
-            throw new IllegalStateException("Project is mandatory");
         }
     }
 
