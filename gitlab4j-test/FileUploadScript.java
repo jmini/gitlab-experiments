@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/gitlab4j/gitlab4j-api/commit/5805b41bae64b6c287abdbd51f63ce84d1ec8b90
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -70,18 +70,16 @@ class FileUploadScript implements Callable<Integer> {
                 filename = fileToUpload.getFileName()
                         .toString();
             }
-            if(project == null && group == null) {
+            if (project == null && group == null) {
                 throw new IllegalStateException("Project or group is mandatory");
-            } else if(project != null && group != null) {
+            } else if (project != null && group != null) {
                 throw new IllegalStateException("Project and group can't be set at the same time");
-            } else if(project != null) {
+            } else if (project != null) {
                 FileUpload uplaodedFile = gitLabApi.getProjectApi()
                         .uploadFile(idOrPath(project), Files.newInputStream(fileToUpload), filename, null);
                 System.out.println(uplaodedFile);
-            } else if(group != null) {
-                FileUpload uplaodedFile = gitLabApi.getGroupApi()
-                        .uploadFile(idOrPath(group), Files.newInputStream(fileToUpload), filename, null);
-                System.out.println(uplaodedFile);
+            } else if (group != null) {
+                throw new IllegalStateException("Upload on goup is not available, see: https://gitlab.com/gitlab-org/gitlab/-/issues/329615");
             }
         }
         return 0;
@@ -90,11 +88,10 @@ class FileUploadScript implements Callable<Integer> {
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
         if (logHttp != null && logHttp) {
             return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
         }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
-
 
     private void filePathMandatory() {
         if (filePath == null) {

@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/0cca2d8adef178b25fd6b53afe489c7f5ccc2394
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -17,11 +17,11 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-import org.gitlab4j.api.Constants.ProjectAccessTokenScope;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.AccessLevel;
 import org.gitlab4j.api.models.ProjectAccessToken;
+import org.gitlab4j.models.Constants.ProjectAccessTokenScope;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;

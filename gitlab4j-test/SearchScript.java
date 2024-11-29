@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:5.6.0
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -10,17 +10,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
-import org.gitlab4j.api.Constants.GroupSearchScope;
-import org.gitlab4j.api.Constants.ProjectSearchScope;
-import org.gitlab4j.api.Constants.SearchScope;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.SearchApi;
+import org.gitlab4j.models.Constants.GroupSearchScope;
+import org.gitlab4j.models.Constants.ProjectSearchScope;
+import org.gitlab4j.models.Constants.SearchScope;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -69,27 +67,32 @@ public class SearchScript implements Callable<Integer> {
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
             final SearchApi searchApi = gitLabApi.getSearchApi();
             List<?> result;
+            ensureExists(scope, "scope");
             if (project == null && group == null) {
                 System.out.println("Global search...");
-                SearchScope globalScope = parseScope(SearchScope.class);
-                if (globalScope == null) {
+                SearchScope<Object> globalSearchScope = SearchScope.forValue(scope);
+                if (globalSearchScope == null) {
+                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
                     return 1;
                 }
-                result = searchApi.globalSearch(globalScope, query);
+
+                result = searchApi.globalSearch(globalSearchScope, query);
             } else if (project != null) {
                 System.out.println("Project search...");
-                ProjectSearchScope projectScope = parseScope(ProjectSearchScope.class);
-                if (projectScope == null) {
+                ProjectSearchScope<Object> projectSearchScope = ProjectSearchScope.forValue(scope);
+                if (projectSearchScope == null) {
+                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
                     return 1;
                 }
-                result = searchApi.projectSearch(idOrPath(project), projectScope, query);
+                result = searchApi.projectSearch(idOrPath(project), projectSearchScope, query);
             } else if (group != null) {
                 System.out.println("Group search...");
-                GroupSearchScope groupScope = parseScope(GroupSearchScope.class);
-                if (groupScope == null) {
+                GroupSearchScope<Object> groupSearchScope = GroupSearchScope.forValue(scope);
+                if (groupSearchScope == null) {
+                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
                     return 1;
                 }
-                result = searchApi.groupSearch(idOrPath(group), groupScope, query);
+                result = searchApi.groupSearch(idOrPath(group), groupSearchScope, query);
             } else {
                 throw new IllegalArgumentException("Unexpected state (input parameters might be wrong)");
             }
@@ -105,15 +108,9 @@ public class SearchScript implements Callable<Integer> {
         return value;
     }
 
-    private <T extends Enum<T>> T parseScope(Class<T> cls) {
-        try {
-            return Enum.valueOf(cls, scope);
-        } catch (IllegalArgumentException ex) {
-            String possibleValues = Arrays.stream(cls.getEnumConstants())
-                    .map(e -> e.name())
-                    .collect(Collectors.joining(", ", "[", "]"));
-            System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: " + possibleValues);
-            return null;
+    private void ensureExists(Object value, String optionName) {
+        if (value == null) {
+            throw new IllegalStateException("--" + optionName + " must be set");
         }
     }
 
