@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
+//DEPS https://github.com/jmini/gitlab4j-api/commit/157f0b160aaec6fff02d817907f1643de2dc23c0
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -72,7 +72,7 @@ public class SearchScript implements Callable<Integer> {
                 System.out.println("Global search...");
                 SearchScope<Object> globalSearchScope = SearchScope.forValue(scope);
                 if (globalSearchScope == null) {
-                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
+                    System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: " + SearchScope.values());
                     return 1;
                 }
 
@@ -81,7 +81,7 @@ public class SearchScript implements Callable<Integer> {
                 System.out.println("Project search...");
                 ProjectSearchScope<Object> projectSearchScope = ProjectSearchScope.forValue(scope);
                 if (projectSearchScope == null) {
-                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
+                    System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: "+ ProjectSearchScope.values());
                     return 1;
                 }
                 result = searchApi.projectSearch(idOrPath(project), projectSearchScope, query);
@@ -89,7 +89,7 @@ public class SearchScript implements Callable<Integer> {
                 System.out.println("Group search...");
                 GroupSearchScope<Object> groupSearchScope = GroupSearchScope.forValue(scope);
                 if (groupSearchScope == null) {
-                    System.out.println("Value '" + scope + "' is not expected for '--scope'");
+                    System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: " + GroupSearchScope.values());
                     return 1;
                 }
                 result = searchApi.groupSearch(idOrPath(group), groupSearchScope, query);
