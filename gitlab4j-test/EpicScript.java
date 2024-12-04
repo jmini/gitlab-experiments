@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
+//DEPS https://github.com/jmini/gitlab4j-api/commit/f24e3a1f250d0080e346a351a9c7d8f2a3c61ae3
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -47,6 +47,12 @@ public class EpicScript implements Callable<Integer> {
     @Option(names = { "-t", "--title" }, description = "epic title")
     private String title;
 
+    @Option(names = { "-b", "--body" }, description = "epic comment body")
+    private String body;
+
+    @Option(names = { "-n", "--note" }, description = "epic comment note id")
+    private Long noteId;
+
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
@@ -54,7 +60,7 @@ public class EpicScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GROUP_EPICS, GET_EPIC, CREATE_EPIC, DELETE_EPIC, DELETE_ALL_EPICS, CLOSE_EPIC, REOPEN_EPIC
+        GROUP_EPICS, GET_EPIC, CREATE_EPIC, DELETE_EPIC, DELETE_ALL_EPICS, CLOSE_EPIC, REOPEN_EPIC, GET_COMMENTS, CREATE_COMMENT, UPDATE_COMMENT, DELETE_COMMENT
     }
 
     @Override
@@ -79,10 +85,7 @@ public class EpicScript implements Callable<Integer> {
                 System.out.println(epics);
                 break;
             case GET_EPIC:
-                ensureExists(group, "group");
-                ensureExists(epicIid, "epic");
-                Epic epic = gitLabApi.getEpicsApi()
-                        .getEpic(idOrPath(group), epicIid);
+                Epic epic = readEpic(gitLabApi);
                 System.out.println(epic);
                 break;
             case CREATE_EPIC:
@@ -109,6 +112,34 @@ public class EpicScript implements Callable<Integer> {
                 for (Epic i : list) {
                     deleteEpic(gitLabApi, i.getIid());
                 }
+                break;
+            case GET_COMMENTS:
+                Epic e1 = readEpic(gitLabApi);
+                List<Note> comments = gitLabApi.getNotesApi()
+                        .getEpicNotes(idOrPath(group), e1.getId());
+                System.out.println(comments);
+                break;
+            case CREATE_COMMENT:
+                Epic e2 = readEpic(gitLabApi);
+                ensureExists(body, "body");
+                Note createdComment = gitLabApi.getNotesApi()
+                        .createEpicNote(idOrPath(group), e2.getId(), body);
+                System.out.println(createdComment);
+                break;
+            case UPDATE_COMMENT:
+                Epic e3 = readEpic(gitLabApi);
+                ensureExists(noteId, "note");
+                ensureExists(body, "body");
+                Note updatedComment = gitLabApi.getNotesApi()
+                        .updateEpicNote(idOrPath(group), e3.getId(), noteId, body);
+                System.out.println(updatedComment);
+                break;
+            case DELETE_COMMENT:
+                Epic e4 = readEpic(gitLabApi);
+                ensureExists(noteId, "note");
+                gitLabApi.getNotesApi()
+                        .deleteEpicNote(idOrPath(group), e4.getId(), noteId);
+                System.out.println("Note " + noteId + " deleted in " + e4.getWebUrl());
                 break;
             case CLOSE_EPIC:
                 ensureExists(group, "group");
@@ -139,6 +170,14 @@ public class EpicScript implements Callable<Integer> {
                     .withRequestResponseLogging(java.util.logging.Level.INFO);
         }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
+    }
+
+    private Epic readEpic(GitLabApi gitLabApi) throws GitLabApiException {
+        ensureExists(group, "group");
+        ensureExists(epicIid, "epic");
+        Epic epic = gitLabApi.getEpicsApi()
+                .getEpic(idOrPath(group), epicIid);
+        return epic;
     }
 
     private void deleteEpic(GitLabApi gitLabApi, Long iid) throws GitLabApiException {
