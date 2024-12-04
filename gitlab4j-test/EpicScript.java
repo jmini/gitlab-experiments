@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
+import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
 
 import picocli.CommandLine;
@@ -53,7 +54,7 @@ public class EpicScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GROUP_EPICS, GET_EPIC, CREATE_EPIC, CLOSE_EPIC, REOPEN_EPIC
+        GROUP_EPICS, GET_EPIC, CREATE_EPIC, DELETE_EPIC, DELETE_ALL_EPICS, CLOSE_EPIC, REOPEN_EPIC
     }
 
     @Override
@@ -96,6 +97,19 @@ public class EpicScript implements Callable<Integer> {
                         .createEpic(idOrPath(group), title, labels, description, startDate, endDate, createdAt);
                 System.out.println(createdEpic);
                 break;
+            case DELETE_EPIC:
+                ensureExists(group, "group");
+                ensureExists(epicIid, "epic");
+                deleteEpic(gitLabApi, epicIid);
+                break;
+            case DELETE_ALL_EPICS:
+                ensureExists(group, "group");
+                List<Epic> list = gitLabApi.getEpicsApi()
+                        .getEpics(idOrPath(group));
+                for (Epic i : list) {
+                    deleteEpic(gitLabApi, i.getIid());
+                }
+                break;
             case CLOSE_EPIC:
                 ensureExists(group, "group");
                 ensureExists(epicIid, "epic");
@@ -122,9 +136,15 @@ public class EpicScript implements Callable<Integer> {
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
         if (logHttp != null && logHttp) {
             return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
         }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
+    }
+
+    private void deleteEpic(GitLabApi gitLabApi, Long iid) throws GitLabApiException {
+        gitLabApi.getEpicsApi()
+                .deleteEpic(idOrPath(group), iid);
+        System.out.println("Deleted epic " + iid);
     }
 
     private void ensureExists(Object value, String optionName) {
