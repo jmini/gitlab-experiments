@@ -42,7 +42,7 @@ public class GroupScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET_GROUP, GET_GROUP_LABELS, GET_GROUP_UPLOADS
+        GET_GROUP, GET_ALL_GROUPS, GET_SUB_GROUPS, GET_DESCENDANT_GROUPS, GET_GROUP_LABELS, GET_GROUP_UPLOADS
     }
 
     @Override
@@ -58,7 +58,6 @@ public class GroupScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-
         try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case GET_GROUP:
@@ -66,6 +65,32 @@ public class GroupScript implements Callable<Integer> {
                 var groupResponse = gitLabApi.getGroupApi()
                         .getGroup(idOrPath(group));
                 System.out.println(groupResponse);
+                break;
+            case GET_ALL_GROUPS:
+                var groups = gitLabApi.getGroupApi()
+                        .getGroups();
+                groups.stream()
+                        .sorted(Comparator.comparing(Group::getFullName))
+                        .forEach(g -> {
+                            System.out.println(g.getFullName());
+                        });
+                break;
+            case GET_SUB_GROUPS:
+                ensureExists(group, "group");
+                var subGroups = gitLabApi.getGroupApi()
+                        .getSubGroups(idOrPath(group));
+                for (Group g : subGroups) {
+                    System.out.println(g.getFullName());
+                }
+                break;
+            case GET_DESCENDANT_GROUPS:
+                ensureExists(group, "group");
+                var descendantGroups = gitLabApi.getGroupApi()
+                        .getDescendantGroups(idOrPath(group), new GroupFilter()
+                                .withAllAvailable(true));
+                for (Group g : descendantGroups) {
+                    System.out.println(g.getFullName());
+                }
                 break;
             case GET_GROUP_LABELS:
                 ensureExists(group, "group");
@@ -89,11 +114,10 @@ public class GroupScript implements Callable<Integer> {
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
         if (logHttp != null && logHttp) {
             return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
         }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
-
 
     private void ensureExists(Object value, String optionName) {
         if (value == null) {
