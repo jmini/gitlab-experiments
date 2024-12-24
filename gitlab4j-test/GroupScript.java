@@ -35,6 +35,9 @@ public class GroupScript implements Callable<Integer> {
     @Option(names = { "-g", "--group" }, description = "group id")
     private String group;
 
+    @Option(names = { "-s", "--skip" }, description = "skipped group ids")
+    private List<Integer> skipped;
+
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
@@ -85,9 +88,13 @@ public class GroupScript implements Callable<Integer> {
                 break;
             case GET_DESCENDANT_GROUPS:
                 ensureExists(group, "group");
+                GroupFilter filter = new GroupFilter()
+                        .withAllAvailable(true);
+                if (skipped != null) {
+                    filter.withSkipGroups(skipped);
+                }
                 var descendantGroups = gitLabApi.getGroupApi()
-                        .getDescendantGroups(idOrPath(group), new GroupFilter()
-                                .withAllAvailable(true));
+                        .getDescendantGroups(idOrPath(group), filter);
                 for (Group g : descendantGroups) {
                     System.out.println(g.getFullName());
                 }
