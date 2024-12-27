@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/efc91b8de2e6acc5fd198d092104fbb5016951e7
+//DEPS https://github.com/jmini/gitlab4j-api/commit/1629143980a2e2de4d1a7495562470a67c4062e3
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -10,9 +10,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
@@ -35,6 +37,9 @@ public class BoardScript implements Callable<Integer> {
     @Parameters(index = "0", description = "action to execute", defaultValue = "GET_BOARDS")
     private Action action;
 
+    @Option(names = { "-t", "--type" }, description = "type", defaultValue = "ISSUE")
+    private Type type;
+
     @Option(names = { "-p", "--project" }, description = "project")
     private String project;
 
@@ -53,6 +58,9 @@ public class BoardScript implements Callable<Integer> {
     @Option(names = { "--labelId" }, description = "label id for the board list")
     private Long labelId;
 
+    @Option(names = { "--assigneeId" }, description = "user id for the board list")
+    private Long assigneeId;
+
     @Option(names = { "--position" }, description = "position of the board list")
     private Integer position;
 
@@ -64,6 +72,10 @@ public class BoardScript implements Callable<Integer> {
 
     private static enum Action {
         GET_BOARDS, GET_BOARD, CREATE_BOARD, UPDATE_BOARD, DELETE_BOARD, GET_BOARD_LISTS, GET_BOARD_LIST, CREATE_BOARD_LIST, UPDATE_BOARD_LIST, DELETE_BOARD_LIST
+    }
+
+    private static enum Type {
+        ISSUE, EPIC
     }
 
     @Override
@@ -79,10 +91,15 @@ public class BoardScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-        if (project == null && group == null) {
-            throw new IllegalStateException("Project or group is mandatory");
-        } else if (project != null && group != null) {
-            throw new IllegalStateException("Project and group can't be set at the same time");
+        if (type == Type.EPIC) {
+            ensureExists(group, "group");
+            if (project != null) {
+                throw new IllegalStateException("Project can't be set for Epic board");
+            }
+        } else if (type == Type.ISSUE) {
+            ensureOneExists(Holder.of(project, "project"), Holder.of(group, "group"));
+        } else {
+            throw new IllegalStateException("Type is unexpected");
         }
 
         try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
@@ -91,10 +108,13 @@ public class BoardScript implements Callable<Integer> {
                 List<Board> boards;
                 if (project != null) {
                     boards = gitLabApi.getBoardsApi()
-                            .getBoards(idOrPath(project));
+                            .getProjectIssueBoards(idOrPath(project));
+                } else if (type == Type.ISSUE) {
+                    boards = gitLabApi.getBoardsApi()
+                            .getGroupIssueBoards(idOrPath(group));
                 } else {
                     boards = gitLabApi.getBoardsApi()
-                            .getGroupBoards(idOrPath(group));
+                            .getGroupEpicBoards(idOrPath(group));
                 }
                 System.out.println(boards);
                 break;
@@ -103,10 +123,13 @@ public class BoardScript implements Callable<Integer> {
                 Board board;
                 if (project != null) {
                     board = gitLabApi.getBoardsApi()
-                            .getBoard(idOrPath(project), boardId);
+                            .getProjectIssueBoard(idOrPath(project), boardId);
+                } else if (type == Type.ISSUE) {
+                    board = gitLabApi.getBoardsApi()
+                            .getGroupIssueBoard(idOrPath(group), boardId);
                 } else {
                     board = gitLabApi.getBoardsApi()
-                            .getGroupBoard(idOrPath(group), boardId);
+                            .getGroupEpicBoard(idOrPath(group), boardId);
                 }
                 System.out.println(board);
                 break;
@@ -115,10 +138,12 @@ public class BoardScript implements Callable<Integer> {
                 Board created;
                 if (project != null) {
                     created = gitLabApi.getBoardsApi()
-                            .createBoard(idOrPath(project), name);
-                } else {
+                            .createProjectIssueBoard(idOrPath(project), name);
+                } else if (type == Type.ISSUE) {
                     created = gitLabApi.getBoardsApi()
-                            .createGroupBoard(idOrPath(group), name);
+                            .createGroupIssueBoard(idOrPath(group), name);
+                } else {
+                    throw new IllegalStateException("Not implemented at server side");
                 }
                 System.out.println(created);
                 break;
@@ -131,10 +156,12 @@ public class BoardScript implements Callable<Integer> {
                 ensureExists(boardId, "id");
                 if (project != null) {
                     gitLabApi.getBoardsApi()
-                            .deleteBoard(idOrPath(project), boardId);
-                } else {
+                            .deleteProjectIssueBoard(idOrPath(project), boardId);
+                } else if (type == Type.ISSUE) {
                     gitLabApi.getBoardsApi()
-                            .deleteGroupBoard(idOrPath(group), boardId);
+                            .deleteGroupIssueBoard(idOrPath(group), boardId);
+                } else {
+                    throw new IllegalStateException("Not implemented at server side");
                 }
                 System.out.println("board " + boardId + " deleted");
                 break;
@@ -143,10 +170,13 @@ public class BoardScript implements Callable<Integer> {
                 List<BoardList> boardLists;
                 if (project != null) {
                     boardLists = gitLabApi.getBoardsApi()
-                            .getBoardLists(idOrPath(project), boardId);
+                            .getProjectIssueBoardLists(idOrPath(project), boardId);
+                } else if (type == Type.ISSUE) {
+                    boardLists = gitLabApi.getBoardsApi()
+                            .getGroupIssueBoardLists(idOrPath(group), boardId);
                 } else {
                     boardLists = gitLabApi.getBoardsApi()
-                            .getGroupBoardLists(idOrPath(group), boardId);
+                            .getGroupEpicBoardLists(idOrPath(group), boardId);
                 }
                 System.out.println(boardLists);
                 break;
@@ -156,10 +186,13 @@ public class BoardScript implements Callable<Integer> {
                 BoardList boardList;
                 if (project != null) {
                     boardList = gitLabApi.getBoardsApi()
-                            .getBoardList(idOrPath(project), boardId, listId);
+                            .getProjectIssueBoardList(idOrPath(project), boardId, listId);
+                } else if (type == Type.ISSUE) {
+                    boardList = gitLabApi.getBoardsApi()
+                            .getGroupIssueBoardList(idOrPath(group), boardId, listId);
                 } else {
                     boardList = gitLabApi.getBoardsApi()
-                            .getGroupBoardList(idOrPath(group), boardId, listId);
+                            .getGroupEpicBoardList(idOrPath(group), boardId, listId);
                 }
                 System.out.println(boardList);
                 break;
@@ -175,10 +208,12 @@ public class BoardScript implements Callable<Integer> {
                 BoardList updatedList;
                 if (project != null) {
                     updatedList = gitLabApi.getBoardsApi()
-                            .updateBoardList(idOrPath(project), boardId, listId, position);
-                } else {
+                            .updateProjectIssueBoardList(idOrPath(project), boardId, listId, position);
+                } else if (type == Type.ISSUE) {
                     updatedList = gitLabApi.getBoardsApi()
-                            .updateGroupBoardList(idOrPath(group), boardId, listId, position);
+                            .updateGroupIssueBoardList(idOrPath(group), boardId, listId, position);
+                } else {
+                    throw new IllegalStateException("Not implemented at server side");
                 }
                 System.out.println(updatedList);
                 break;
@@ -187,10 +222,12 @@ public class BoardScript implements Callable<Integer> {
                 ensureExists(listId, "listId");
                 if (project != null) {
                     gitLabApi.getBoardsApi()
-                            .deleteBoardList(idOrPath(project), boardId, listId);
-                } else {
+                            .deleteProjectIssueBoardList(idOrPath(project), boardId, listId);
+                } else if (type == Type.ISSUE) {
                     gitLabApi.getBoardsApi()
-                            .deleteGroupBoardList(idOrPath(group), boardId, listId);
+                            .deleteGroupIssueBoardList(idOrPath(group), boardId, listId);
+                } else {
+                    throw new IllegalStateException("Not implemented at server side");
                 }
                 System.out.println("board list " + listId + " in board " + boardId + " deleted");
                 break;
@@ -202,16 +239,17 @@ public class BoardScript implements Callable<Integer> {
     }
 
     private BoardList createList(GitLabApi gitLabApi) throws GitLabApiException {
-        Long assigneeId = null;
         Long milestoneId = null;
         Long iterationId = null;
-        ensureExists(labelId, "labelId");
+        ensureOneExists(Holder.of(labelId, "labelId"), Holder.of(assigneeId, "assigneeId"));
         if (project != null) {
             return gitLabApi.getBoardsApi()
-                    .createBoardList(idOrPath(project), boardId, labelId, assigneeId, milestoneId, iterationId);
-        } else {
+                    .createProjectIssueBoardList(idOrPath(project), boardId, labelId, assigneeId, milestoneId, iterationId);
+        } else if (type == Type.ISSUE) {
             return gitLabApi.getBoardsApi()
-                    .createGroupBoardList(idOrPath(group), boardId, labelId, assigneeId, milestoneId, iterationId);
+                    .createGroupIssueBoardList(idOrPath(group), boardId, labelId, assigneeId, milestoneId, iterationId);
+        } else {
+            throw new IllegalStateException("Not implemented at server side");
         }
     }
 
@@ -224,10 +262,12 @@ public class BoardScript implements Callable<Integer> {
         Boolean hideClosedList = null;
         if (project != null) {
             return gitLabApi.getBoardsApi()
-                    .updateBoard(idOrPath(project), boardId, name, hideBacklogList, hideClosedList, assigneeId, milestoneId, labels, weight);
-        } else {
+                    .updateProjectIssueBoard(idOrPath(project), boardId, name, hideBacklogList, hideClosedList, assigneeId, milestoneId, labels, weight);
+        } else if (type == Type.ISSUE) {
             return gitLabApi.getBoardsApi()
-                    .updateGroupBoard(idOrPath(group), boardId, name, hideBacklogList, hideClosedList, assigneeId, milestoneId, labels, weight);
+                    .updateGroupIssueBoard(idOrPath(group), boardId, name, hideBacklogList, hideClosedList, assigneeId, milestoneId, labels, weight);
+        } else {
+            throw new IllegalStateException("Not implemented at server side");
         }
     }
 
@@ -242,6 +282,25 @@ public class BoardScript implements Callable<Integer> {
     private void ensureExists(Object value, String optionName) {
         if (value == null) {
             throw new IllegalStateException("--" + optionName + " must be set");
+        }
+    }
+
+    private void ensureOneExists(Holder... values) {
+        List<Holder> list = Arrays.stream(values)
+                .filter(h -> h.value != null)
+                .toList();
+        if (list.isEmpty()) {
+            String names = Arrays.stream(values)
+                    .map(h -> "--" + h.name)
+                    .collect(Collectors.joining(", "));
+            throw new IllegalStateException("One of " + names + " must be set");
+        }
+        if (list.size() > 1) {
+            String names = list.stream()
+                    .map(h -> "--" + h.name)
+                    .collect(Collectors.joining(", "));
+            throw new IllegalStateException("Not all of " + names + " can be set at the same time");
+
         }
     }
 
@@ -294,5 +353,20 @@ public class BoardScript implements Callable<Integer> {
     public static void main(final String... args) {
         final int exitCode = new CommandLine(new BoardScript()).execute(args);
         System.exit(exitCode);
+    }
+
+    public static class Holder {
+        private Object value;
+        private String name;
+
+        public Holder(Object value, String name) {
+            super();
+            this.value = value;
+            this.name = name;
+        }
+
+        public static Holder of(Object value, String name) {
+            return new Holder(value, name);
+        }
     }
 }
