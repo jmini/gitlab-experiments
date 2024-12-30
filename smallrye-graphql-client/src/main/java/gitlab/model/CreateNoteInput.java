@@ -14,18 +14,22 @@ public class CreateNoteInput {
      * Global ID of the resource to add a note to.
      */
     private NoteableID noteableId;
+
     /**
      * Content of the note.
      */
     private String body;
+
     /**
      * Internal flag for a note. Default is false.
      */
     private Boolean internal;
+
     /**
      * Global ID of the discussion the note is in reply to.
      */
     private DiscussionID discussionId;
+
     /**
      * SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent.
      */

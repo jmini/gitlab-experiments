@@ -11,18 +11,22 @@ public class LinkedWorkItemType {
      * Timestamp the link was created.
      */
     private Time linkCreatedAt;
+
     /**
      * Global ID of the link.
      */
     private WorkItemsRelatedWorkItemLinkID linkId;
+
     /**
      * Type of link.
      */
     private String linkType;
+
     /**
      * Timestamp the link was updated.
      */
     private Time linkUpdatedAt;
+
     /**
      * Linked work item.
      */

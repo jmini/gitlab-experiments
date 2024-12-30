@@ -17,6 +17,7 @@ public class WorkItemWidgetLinkedItems implements WorkItemWidget {
      */
     @Deprecated
     private LinkedWorkItemTypeConnection linkedItems;
+
     /**
      * Widget type.
      */

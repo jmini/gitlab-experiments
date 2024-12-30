@@ -11,18 +11,22 @@ public class Label {
      * Background color of the label.
      */
     private String color;
+
     /**
      * Description of the label (Markdown rendered as HTML for caching).
      */
     private String description;
+
     /**
      * Label ID.
      */
     private LabelID id;
+
     /**
      * Text color of the label.
      */
     private String textColor;
+
     /**
      * Content of the label.
      */

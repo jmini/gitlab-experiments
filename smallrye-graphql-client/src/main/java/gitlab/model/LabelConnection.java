@@ -15,10 +15,12 @@ public class LabelConnection {
      * Total count of collection.
      */
     private Integer count;
+
     /**
      * A list of nodes.
      */
     private List<Label> nodes;
+
     /**
      * Information to aid in pagination.
      */

@@ -11,10 +11,12 @@ public class Namespace {
      * Full path of the namespace.
      */
     private String fullPath;
+
     /**
      * ID of the namespace.
      */
     private String id;
+
     /**
      * Visibility of the namespace.
      */

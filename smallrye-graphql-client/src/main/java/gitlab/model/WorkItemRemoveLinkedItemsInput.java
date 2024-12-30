@@ -15,6 +15,7 @@ public class WorkItemRemoveLinkedItemsInput {
      * Global ID of the work item.
      */
     private WorkItemID id;
+
     /**
      * Global IDs of the items to unlink. Maximum number of IDs you can provide: 10.
      */

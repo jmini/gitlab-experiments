@@ -17,22 +17,27 @@ public class WorkItemRef {
      */
     @Deprecated
     private Boolean archived;
+
     /**
      * Indicates the work item is confidential.
      */
     private Boolean confidential;
+
     /**
      * Timestamp of when the work item was created.
      */
     private Time createdAt;
+
     /**
      * Global ID of the work item.
      */
     private WorkItemID id;
+
     /**
      * Internal ID of the work item.
      */
     private String iid;
+
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
      *
@@ -40,22 +45,27 @@ public class WorkItemRef {
      */
     @Deprecated
     private Namespace namespace;
+
     /**
      * Internal reference of the work item. Returned in shortened format by default.
      */
     private String reference;
+
     /**
      * State of the work item.
      */
     private WorkItemState state;
+
     /**
      * Title of the work item.
      */
     private String title;
+
     /**
      * URL of this object.
      */
     private String webUrl;
+
     /**
      * Type assigned to the work item.
      */

@@ -14,6 +14,7 @@ public class UpdateNoteInput {
      * Global ID of the note to update.
      */
     private NoteID id;
+
     /**
      * Content of the note.
      */

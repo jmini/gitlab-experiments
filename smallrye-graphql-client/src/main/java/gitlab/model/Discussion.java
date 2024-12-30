@@ -11,6 +11,7 @@ public class Discussion {
      * ID of the discussion.
      */
     private DiscussionID id;
+
     /**
      * All notes in the discussion.
      */

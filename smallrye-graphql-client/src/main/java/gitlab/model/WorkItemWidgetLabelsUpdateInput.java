@@ -12,6 +12,7 @@ public class WorkItemWidgetLabelsUpdateInput {
      * Global IDs of labels to be added to the work item.
      */
     private List<LabelID> addLabelIds;
+
     /**
      * Global IDs of labels to be removed from the work item.
      */

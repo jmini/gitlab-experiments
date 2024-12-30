@@ -14,34 +14,42 @@ public class WorkItemUpdateInput {
      * Input for assignees widget.
      */
     private WorkItemWidgetAssigneesInput assigneesWidget;
+
     /**
      * Input for description widget.
      */
     private WorkItemWidgetDescriptionInput descriptionWidget;
+
     /**
      * Input for hierarchy widget.
      */
     private WorkItemWidgetHierarchyUpdateInput hierarchyWidget;
+
     /**
      * Global ID of the work item.
      */
     private WorkItemID id;
+
     /**
      * Input for labels widget.
      */
     private WorkItemWidgetLabelsUpdateInput labelsWidget;
+
     /**
      * Input for start and due date widget.
      */
     private WorkItemWidgetStartAndDueDateUpdateInput startAndDueDateWidget;
+
     /**
      * Close or reopen a work item.
      */
     private WorkItemStateEvent stateEvent;
+
     /**
      * Title of the work item.
      */
     private String title;
+
     private WorkItemWidgetRolledupDatesInput rolledupDatesWidget;
 
     public WorkItemWidgetAssigneesInput getAssigneesWidget() {

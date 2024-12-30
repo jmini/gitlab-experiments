@@ -4,21 +4,28 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.graphql.Name;
 
+import jakarta.json.bind.annotation.JsonbProperty;
+
 @Name("WorkItemWidgetRolledupDatesInput")
 public class WorkItemWidgetRolledupDatesInput {
 
     /**
      * Fixed start date for the work item.
      */
+    @JsonbProperty(value = "startDateFixed", nillable = true)
     private Date startDateFixed;
+
     /**
      * When start_date_fixed is not provided it defaults to `false`.
      */
     private Boolean startDateIsFixed;
+
     /**
      * Fixed due date for the work item.
      */
+    @JsonbProperty(value = "dueDateFixed", nillable = true)
     private Date dueDateFixed;
+
     /**
      * When due_date_fixed is not provided it defaults to `false`.
      */

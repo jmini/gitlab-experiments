@@ -14,18 +14,22 @@ public class WorkItemCreateInput {
      * Input for assignees widget.
      */
     private WorkItemWidgetAssigneesInput assigneesWidget;
+
     /**
      * Input for description widget.
      */
     private WorkItemWidgetDescriptionInput descriptionWidget;
+
     /**
      * Full path of the namespace(project or group) the work item is created in.
      */
     private String namespacePath;
+
     /**
      * Title of the work item.
      */
     private String title;
+
     /**
      * Global ID of a work item type.
      */

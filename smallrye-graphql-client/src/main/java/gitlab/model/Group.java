@@ -11,26 +11,32 @@ public class Group {
      * Full name of the namespace.
      */
     private String fullName;
+
     /**
      * Full path of the namespace.
      */
     private String fullPath;
+
     /**
      * ID of the namespace.
      */
     private String id;
+
     /**
      * Labels available on this group.
      */
     private LabelConnection labels;
+
     /**
      * Name of the namespace.
      */
     private String name;
+
     /**
      * Web URL of the group.
      */
     private String webUrl;
+
     /**
      * Work item types available to the group.
      */

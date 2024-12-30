@@ -15,6 +15,7 @@ public class AwardEmojiAddPayload {
      * Emoji reactions after mutation.
      */
     private AwardEmoji awardEmoji;
+
     /**
      * Errors encountered during execution of the mutation.
      */

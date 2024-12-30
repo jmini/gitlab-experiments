@@ -15,6 +15,7 @@ public class WorkItemUpdatePayload {
      * Errors encountered during execution of the mutation.
      */
     private List<String> errors;
+
     /**
      * Updated work item.
      */

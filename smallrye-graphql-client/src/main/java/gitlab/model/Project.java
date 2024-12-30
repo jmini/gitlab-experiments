@@ -11,30 +11,37 @@ public class Project {
      * ID of the project.
      */
     private String id;
+
     /**
      * Labels available on this project.
      */
     private LabelConnection labels;
+
     /**
      * Name of the project (without namespace).
      */
     private String name;
+
     /**
      * Full name of the project with its namespace.
      */
     private String nameWithNamespace;
+
     /**
      * Namespace of the project.
      */
     private Namespace namespace;
+
     /**
      * Path of the project.
      */
     private String path;
+
     /**
      * Web URL of the project.
      */
     private String webUrl;
+
     /**
      * Work item types available to the project.
      */

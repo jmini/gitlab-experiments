@@ -14,10 +14,12 @@ public class WorkItemWidgetHierarchy implements WorkItemWidget {
      * Ancestors (parents) of the work item.
      */
     private WorkItemConnectionRef ancestors;
+
     /**
      * Child work items.
      */
     private WorkItemConnectionRef children;
+
     /**
      * Parent work item.
      */

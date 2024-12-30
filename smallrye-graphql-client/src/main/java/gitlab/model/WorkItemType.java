@@ -11,6 +11,7 @@ public class WorkItemType {
      * Global ID of the work item type.
      */
     private WorkItemsTypeID id;
+
     /**
      * Name of the work item type.
      */

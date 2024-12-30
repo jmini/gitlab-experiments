@@ -15,30 +15,37 @@ public class WorkItem {
      */
     @Deprecated
     private Boolean archived;
+
     /**
      * Timestamp of when the work item was closed.
      */
     private Time closedAt;
+
     /**
      * Indicates the work item is confidential.
      */
     private Boolean confidential;
+
     /**
      * Timestamp of when the work item was created.
      */
     private Time createdAt;
+
     /**
      * Global ID of the work item.
      */
     private WorkItemID id;
+
     /**
      * Internal ID of the work item.
      */
     private String iid;
+
     /**
      * Lock version of the work item. Incremented each time the work item is updated.
      */
     private Integer lockVersion;
+
     /**
      * Namespace the work item belongs to. Introduced in GitLab 15.10: **Status**: Experiment.
      *
@@ -46,30 +53,37 @@ public class WorkItem {
      */
     @Deprecated
     private Namespace namespace;
+
     /**
      * Internal reference of the work item. Returned in shortened format by default.
      */
     private String reference;
+
     /**
      * State of the work item.
      */
     private WorkItemState state;
+
     /**
      * Title of the work item.
      */
     private String title;
+
     /**
      * Timestamp of when the work item was last updated.
      */
     private Time updatedAt;
+
     /**
      * URL of this object.
      */
     private String webUrl;
+
     /**
      * Collection of widgets that belong to the work item.
      */
     private List<WorkItemWidget> widgets;
+
     /**
      * Type assigned to the work item.
      */

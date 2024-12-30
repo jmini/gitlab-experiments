@@ -24,10 +24,13 @@ import fr.jmini.gql.codegen.Generator;
 import fr.jmini.gql.codegen.config.ArgsFilter;
 import fr.jmini.gql.codegen.config.Config;
 import fr.jmini.gql.codegen.config.CustomScalarMappingStrategy;
+import fr.jmini.gql.codegen.config.FieldHint;
 import fr.jmini.gql.codegen.config.FieldsFilter;
 import fr.jmini.gql.codegen.config.GraphQLClientApiAnnotation;
 import fr.jmini.gql.codegen.config.IncludeStrategy;
 import fr.jmini.gql.codegen.config.InputFieldsFilter;
+import fr.jmini.gql.codegen.config.InputValueHint;
+import fr.jmini.gql.codegen.config.NestedParameter;
 import fr.jmini.gql.codegen.config.Scope;
 import fr.jmini.gql.codegen.config.TypesFilter;
 import fr.jmini.gql.schema.SchemaUtil;
@@ -104,6 +107,66 @@ class GenerateGitlabClient {
                 .setDefaultCustomScalarMapping(CustomScalarMappingStrategy.CREATE_CUSTOM_SCALAR_CLASS)
                 .setScope(new Scope()
                         .setDefaultStrategy(IncludeStrategy.INCLUDE_NONE)
+                        .addHint(new InputValueHint()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetRolledupDatesInput")
+                                .setInputValueName("startDateFixed")
+                                .setNullable() //
+                        )
+                        .addHint(new InputValueHint()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetRolledupDatesInput")
+                                .setInputValueName("dueDateFixed")
+                                .setNullable() //
+                        )
+                        .addHint(new InputValueHint()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetStartAndDueDateUpdateInput")
+                                .setInputValueName("startDate")
+                                .setNullable() //
+                        )
+                        .addHint(new InputValueHint()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetStartAndDueDateUpdateInput")
+                                .setInputValueName("dueDate")
+                                .setNullable() //
+                        )
+                        .addHint(new FieldHint()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(SchemaUtil.getQueryType(schema)
+                                        .getName())
+                                .setFieldName("group")
+                                .addNestedParameter(new NestedParameter()
+                                        .setGraphQlNestedParameterPath("labels")
+                                        .setGraphQlName("includeAncestorGroups")
+                                        .setParameterType("boolean") //
+                                        .setParameterName("labelsIncludeAncestorGroups") //
+                                )
+                                .addNestedParameter(new NestedParameter()
+                                        .setGraphQlNestedParameterPath("labels")
+                                        .setGraphQlName("after")
+                                        .setParameterType("String") //
+                                        .setParameterName("labelsAfter") //
+                                ) //
+                        )
+                        .addHint(new FieldHint()
+                                .setTypeKind(Kind.OBJECT)
+                                .setTypeName(SchemaUtil.getQueryType(schema)
+                                        .getName())
+                                .setFieldName("project")
+                                .addNestedParameter(new NestedParameter()
+                                        .setGraphQlNestedParameterPath("labels")
+                                        .setGraphQlName("includeAncestorGroups")
+                                        .setParameterType("boolean") //
+                                        .setParameterName("labelsIncludeAncestorGroups") //
+                                )
+                                .addNestedParameter(new NestedParameter()
+                                        .setGraphQlNestedParameterPath("labels")
+                                        .setGraphQlName("after")
+                                        .setParameterType("String") //
+                                        .setParameterName("labelsAfter") //
+                                ) //
+                        )
                         .addFilter(new TypesFilter()
                                 .setTypeKind(Kind.OBJECT)
                                 .addIncludeName("WorkItem")

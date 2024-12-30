@@ -14,6 +14,7 @@ public class WorkItemWidgetAssignees implements WorkItemWidget {
      * Assignees of the work item.
      */
     private UserCoreConnection assignees;
+
     /**
      * Widget type.
      */

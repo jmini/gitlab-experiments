@@ -14,10 +14,12 @@ public class AwardEmoji {
      * Emoji name.
      */
     private String name;
+
     /**
      * Emoji in Unicode.
      */
     private String unicode;
+
     /**
      * Unicode version for the emoji.
      */

@@ -14,10 +14,12 @@ public class PageInfo {
      * When paginating forwards, the cursor to continue.
      */
     private String endCursor;
+
     /**
      * When paginating forwards, are there more items?
      */
     private Boolean hasNextPage;
+
     /**
      * When paginating backwards, the cursor to continue.
      */

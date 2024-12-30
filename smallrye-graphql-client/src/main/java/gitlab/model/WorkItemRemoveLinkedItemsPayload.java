@@ -15,10 +15,12 @@ public class WorkItemRemoveLinkedItemsPayload {
      * Errors encountered during execution of the mutation.
      */
     private List<String> errors;
+
     /**
      * Linked items update result message.
      */
     private String message;
+
     /**
      * Updated work item.
      */

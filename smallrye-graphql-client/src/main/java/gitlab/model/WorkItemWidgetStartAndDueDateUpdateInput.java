@@ -4,17 +4,23 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.graphql.Name;
 
+import jakarta.json.bind.annotation.JsonbProperty;
+
 @Name("WorkItemWidgetStartAndDueDateUpdateInput")
 public class WorkItemWidgetStartAndDueDateUpdateInput {
 
     /**
      * Due date for the work item.
      */
+    @JsonbProperty(value = "dueDate", nillable = true)
     private Date dueDate;
+
     /**
      * Start date for the work item.
      */
+    @JsonbProperty(value = "startDate", nillable = true)
     private Date startDate;
+
     /**
      * Indicates if the work item is using fixed dates.
      */

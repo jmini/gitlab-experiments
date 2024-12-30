@@ -12,14 +12,17 @@ public class WorkItemWidgetHierarchyUpdateInput {
      * ID of the work item to be switched with.
      */
     private WorkItemID adjacentWorkItemId;
+
     /**
      * Global IDs of children work items.
      */
     private List<WorkItemID> childrenIds;
+
     /**
      * Global ID of the parent work item. Use `null` to remove the association.
      */
     private WorkItemID parentId;
+
     /**
      * Type of switch. Valid values are `BEFORE` or `AFTER`.
      */

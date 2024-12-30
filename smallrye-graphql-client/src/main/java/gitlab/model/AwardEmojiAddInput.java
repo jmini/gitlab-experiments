@@ -14,6 +14,7 @@ public class AwardEmojiAddInput {
      * Global ID of the awardable resource.
      */
     private AwardableID awardableId;
+
     /**
      * Emoji name.
      */

@@ -15,6 +15,7 @@ public class UpdateNotePayload {
      * Errors encountered during execution of the mutation.
      */
     private List<String> errors;
+
     /**
      * Note after mutation.
      */

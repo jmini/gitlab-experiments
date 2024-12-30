@@ -14,6 +14,7 @@ public class UserCore {
      * ID of the user.
      */
     private UserID id;
+
     /**
      * Username of the user. Unique within this instance of GitLab.
      */

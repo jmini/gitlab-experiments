@@ -11,14 +11,17 @@ public class Note {
      * User who wrote the note.
      */
     private UserCore author;
+
     /**
      * List of emoji reactions associated with the note.
      */
     private AwardEmojiConnection awardEmoji;
+
     /**
      * Content of the note.
      */
     private String body;
+
     /**
      * ID of the note.
      */

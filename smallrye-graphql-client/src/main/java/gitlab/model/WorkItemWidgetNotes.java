@@ -14,6 +14,7 @@ public class WorkItemWidgetNotes implements WorkItemWidget {
      * Notes on this work item.
      */
     private DiscussionConnection discussions;
+
     /**
      * Widget type.
      */

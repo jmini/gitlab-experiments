@@ -14,10 +14,12 @@ public class WorkItemWidgetStartAndDueDate implements WorkItemWidget {
      * Due date of the work item.
      */
     private Date dueDate;
+
     /**
      * Start date of the work item.
      */
     private Date startDate;
+
     /**
      * Widget type.
      */

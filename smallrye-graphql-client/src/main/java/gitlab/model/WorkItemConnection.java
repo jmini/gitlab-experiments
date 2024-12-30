@@ -15,6 +15,7 @@ public class WorkItemConnection {
      * Total count of collection.
      */
     private Integer count;
+
     /**
      * A list of nodes.
      */

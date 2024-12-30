@@ -15,10 +15,12 @@ public class WorkItemAddLinkedItemsInput {
      * Global ID of the work item.
      */
     private WorkItemID id;
+
     /**
      * Type of link. Defaults to `RELATED`.
      */
     private WorkItemRelatedLinkType linkType;
+
     /**
      * Global IDs of the items to link. Maximum number of IDs you can provide: 10.
      */

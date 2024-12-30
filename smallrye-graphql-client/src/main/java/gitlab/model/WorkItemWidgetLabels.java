@@ -14,6 +14,7 @@ public class WorkItemWidgetLabels implements WorkItemWidget {
      * Labels assigned to the work item.
      */
     private LabelConnection labels;
+
     /**
      * Widget type.
      */
