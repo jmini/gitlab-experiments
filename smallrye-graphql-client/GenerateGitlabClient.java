@@ -1,10 +1,11 @@
-package codegen;
-
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS fr.jmini.graphql:graphql-client-generator:1.0.0-SNAPSHOT
 
 //JAVA 17
+
+package codegen;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,6 +70,17 @@ class GenerateGitlabClient {
         Field parentField = SchemaUtil.getFieldByName(schema, workItemWidgetHierarchy, "parent");
         parentField.getType()
                 .setName("WorkItemRef");
+
+        Type workItemUpdateInput = SchemaUtil.getTypeByKindAndName(schema, Kind.INPUT_OBJECT, "WorkItemUpdateInput");
+        Type workItemWidgetRolledupDatesInput = SchemaUtil.getTypeByKindAndName(schema, Kind.INPUT_OBJECT, "WorkItemWidgetRolledupDatesInput");
+        TypeRef workItemWidgetRolledupDatesInputTypeRef = new TypeRef();
+        workItemWidgetRolledupDatesInputTypeRef.setKind(workItemWidgetRolledupDatesInput.getKind());
+        workItemWidgetRolledupDatesInputTypeRef.setName(workItemWidgetRolledupDatesInput.getName());
+        InputValue rolledupDatesWidget = new InputValue();
+        rolledupDatesWidget.setName("rolledupDatesWidget");
+        rolledupDatesWidget.setType(workItemWidgetRolledupDatesInputTypeRef);
+        workItemUpdateInput.getInputFields()
+                .add(rolledupDatesWidget);
 
         schema.getTypes()
                 .add(createWorkItemConnectionRef());
@@ -948,6 +960,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("WorkItemWidgetStartAndDueDateUpdateInput") //
                                 .addIncludeName("WorkItemAddLinkedItemsInput") //
                                 .addIncludeName("WorkItemRemoveLinkedItemsInput") //
+                                .addIncludeName("WorkItemWidgetRolledupDatesInput") //
                                 .addIncludeName("CreateNoteInput") //
                                 .addIncludeName("UpdateNoteInput") //
                                 .addIncludeName("DestroyNoteInput") //
@@ -976,6 +989,7 @@ class GenerateGitlabClient {
                                 .addIncludeName("labelsWidget") //
                                 .addIncludeName("hierarchyWidget") //
                                 .addIncludeName("startAndDueDateWidget") //
+                                .addIncludeName("rolledupDatesWidget") //
                                 .addIncludeName("title") //
                                 .addIncludeName("id") //
                                 .addIncludeName("stateEvent") //
@@ -1067,6 +1081,14 @@ class GenerateGitlabClient {
                                 .setTypeName("WorkItemRemoveLinkedItemsInput")
                                 .addIncludeName("id") //
                                 .addIncludeName("workItemsIds") //
+                        ) //
+                        .addFilter(new InputFieldsFilter()
+                                .setTypeKind(Kind.INPUT_OBJECT)
+                                .setTypeName("WorkItemWidgetRolledupDatesInput")
+                                .addIncludeName("dueDateIsFixed") //
+                                .addIncludeName("startDateIsFixed") //
+                                .addIncludeName("dueDateFixed") //
+                                .addIncludeName("startDateFixed") //
                         ) //
                         .addFilter(new InputFieldsFilter()
                                 .setTypeKind(Kind.INPUT_OBJECT)
