@@ -1,10 +1,9 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:5.4.0
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +51,9 @@ class ProjectsScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         PRINT_PROJECT, PRINT_PROJECTS, CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT
     }
@@ -69,7 +71,7 @@ class ProjectsScript implements Callable<Integer> {
         String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             System.out.println("Action " + action + " ...");
 
             Project project;
@@ -118,6 +120,14 @@ class ProjectsScript implements Callable<Integer> {
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
     private void projectIdMandatory() {

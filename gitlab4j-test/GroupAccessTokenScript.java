@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/0cca2d8adef178b25fd6b53afe489c7f5ccc2394
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -55,6 +55,9 @@ public class GroupAccessTokenScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         LIST_GROUP_ACCESS_TOKEN, GET_GROUP_ACCESS_TOKEN, CREATE_GROUP_ACCESS_TOKEN, ROTATE_GROUP_ACCESS_TOKEN, REVOKE_GROUP_ACCESS_TOKEN
     }
@@ -74,7 +77,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
 
         ensureExists(group, "group");
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case LIST_GROUP_ACCESS_TOKEN:
                 var tokens = gitLabApi.getGroupApi()
@@ -106,6 +109,14 @@ public class GroupAccessTokenScript implements Callable<Integer> {
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
     private Long getTokenId(GitLabApi gitLabApi) throws GitLabApiException {

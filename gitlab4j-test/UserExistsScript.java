@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/strangelookingnerd/gitlab4j-api/commit/e5cfb2bfa9a49db734ca0a33bddeb678f09b42c4
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -10,19 +10,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
-import org.gitlab4j.api.models.EpicIssue;
-import org.gitlab4j.api.models.Issue;
-import org.gitlab4j.api.models.IterationFilter;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 @Command(name = "UserExistsScript", mixinStandardHelpOptions = true, version = "UserExistsScript 0.1", description = "Tests for GitLab4J")
 public class UserExistsScript implements Callable<Integer> {

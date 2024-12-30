@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/0cca2d8adef178b25fd6b53afe489c7f5ccc2394
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -17,11 +17,11 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-import org.gitlab4j.api.Constants.ProjectAccessTokenScope;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.AccessLevel;
 import org.gitlab4j.api.models.ProjectAccessToken;
+import org.gitlab4j.models.Constants.ProjectAccessTokenScope;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -60,6 +60,9 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         LIST_PROJECT_ACCESS_TOKEN, GET_PROJECT_ACCESS_TOKEN, CREATE_PROJECT_ACCESS_TOKEN, ROTATE_PROJECT_ACCESS_TOKEN, REVOKE_PROJECT_ACCESS_TOKEN
     }
@@ -79,7 +82,7 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
 
         ensureExists(project, "project");
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case LIST_PROJECT_ACCESS_TOKEN:
                 var tokens = gitLabApi.getProjectApi()
@@ -93,6 +96,7 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
                 System.out.println(token);
                 break;
             case CREATE_PROJECT_ACCESS_TOKEN:
+                ensureExists(tokenName, "tokenName");
                 var createdToken = gitLabApi.getProjectApi()
                         .createProjectAccessToken(idOrPath(project), tokenName, scopes, expiresAt, accessLevelValue(accessLevel));
                 System.out.println(createdToken);
@@ -111,6 +115,14 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
     private static Long accessLevelValue(AccessLevel value) {

@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/c3981f425828088f6d8f25d1435b5c2953fc1a35
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -15,9 +15,8 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
-import org.gitlab4j.api.models.EpicIssue;
-import org.gitlab4j.api.models.Issue;
-import org.gitlab4j.api.models.IterationFilter;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.*;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -50,8 +49,11 @@ public class IssueScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
-        PROJECT_ISSUES, GET_ISSUE, GET_LINKED_ISSUES, GET_EPIC_ISSUES, CLOSE_ISSUE, REOPEN_ISSUE
+        PROJECT_ISSUES, GET_ISSUE, GET_LINKED_ISSUES, GET_EPIC_ISSUES, DELETE_ISSUE, DELETE_ALL_ISSUES, CLOSE_ISSUE, REOPEN_ISSUE
     }
 
     @Override
@@ -82,6 +84,19 @@ public class IssueScript implements Callable<Integer> {
                         .getIssue(idOrPath(project), issueIid);
                 System.out.println(issue);
                 break;
+            case DELETE_ISSUE:
+                ensureExists(project, "project");
+                ensureExists(issueIid, "issue");
+                deleteIssue(gitLabApi, issueIid);
+                break;
+            case DELETE_ALL_ISSUES:
+                ensureExists(project, "project");
+                List<Issue> list = gitLabApi.getIssuesApi()
+                        .getIssues(idOrPath(project));
+                for (Issue i : list) {
+                    deleteIssue(gitLabApi, i.getIid());
+                }
+                break;
             case CLOSE_ISSUE:
                 ensureExists(project, "project");
                 ensureExists(issueIid, "issue");
@@ -99,7 +114,7 @@ public class IssueScript implements Callable<Integer> {
             case GET_LINKED_ISSUES:
                 ensureExists(project, "project");
                 ensureExists(issueIid, "issue");
-                List<Issue> linkedIssue = gitLabApi.getIssuesApi()
+                var linkedIssue = gitLabApi.getIssuesApi()
                         .getIssueLinks(idOrPath(project), issueIid);
                 System.out.println(linkedIssue);
                 break;
@@ -115,6 +130,20 @@ public class IssueScript implements Callable<Integer> {
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
+    }
+
+    private void deleteIssue(GitLabApi gitLabApi, Long iid) throws GitLabApiException {
+        gitLabApi.getIssuesApi()
+                .deleteIssue(idOrPath(project), iid);
+        System.out.println("Deleted issue " + iid);
     }
 
     private void ensureExists(Object value, String optionName) {

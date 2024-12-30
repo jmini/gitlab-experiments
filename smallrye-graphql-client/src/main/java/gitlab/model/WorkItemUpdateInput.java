@@ -42,6 +42,7 @@ public class WorkItemUpdateInput {
      * Title of the work item.
      */
     private String title;
+    private WorkItemWidgetRolledupDatesInput rolledupDatesWidget;
 
     public WorkItemWidgetAssigneesInput getAssigneesWidget() {
         return assigneesWidget;
@@ -115,9 +116,18 @@ public class WorkItemUpdateInput {
         return this;
     }
 
+    public WorkItemWidgetRolledupDatesInput getRolledupDatesWidget() {
+        return rolledupDatesWidget;
+    }
+
+    public WorkItemUpdateInput setRolledupDatesWidget(WorkItemWidgetRolledupDatesInput rolledupDatesWidget) {
+        this.rolledupDatesWidget = rolledupDatesWidget;
+        return this;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(assigneesWidget, descriptionWidget, hierarchyWidget, id, labelsWidget, startAndDueDateWidget, stateEvent, title);
+        return Objects.hash(assigneesWidget, descriptionWidget, hierarchyWidget, id, labelsWidget, startAndDueDateWidget, stateEvent, title, rolledupDatesWidget);
     }
 
     @Override
@@ -129,12 +139,12 @@ public class WorkItemUpdateInput {
         if (getClass() != obj.getClass())
             return false;
         WorkItemUpdateInput other = (WorkItemUpdateInput) obj;
-        return Objects.equals(assigneesWidget, other.assigneesWidget) && Objects.equals(descriptionWidget, other.descriptionWidget) && Objects.equals(hierarchyWidget, other.hierarchyWidget) && Objects.equals(id, other.id) && Objects.equals(labelsWidget, other.labelsWidget) && Objects.equals(startAndDueDateWidget, other.startAndDueDateWidget) && Objects.equals(stateEvent, other.stateEvent) && Objects.equals(title, other.title);
+        return Objects.equals(assigneesWidget, other.assigneesWidget) && Objects.equals(descriptionWidget, other.descriptionWidget) && Objects.equals(hierarchyWidget, other.hierarchyWidget) && Objects.equals(id, other.id) && Objects.equals(labelsWidget, other.labelsWidget) && Objects.equals(startAndDueDateWidget, other.startAndDueDateWidget) && Objects.equals(stateEvent, other.stateEvent) && Objects.equals(title, other.title) && Objects.equals(rolledupDatesWidget, other.rolledupDatesWidget);
     }
 
     @Override
     public String toString() {
-        return "WorkItemUpdateInput [assigneesWidget=" + assigneesWidget + ", descriptionWidget=" + descriptionWidget + ", hierarchyWidget=" + hierarchyWidget + ", id=" + id + ", labelsWidget=" + labelsWidget + ", startAndDueDateWidget=" + startAndDueDateWidget + ", stateEvent=" + stateEvent + ", title=" + title + "]";
+        return "WorkItemUpdateInput [assigneesWidget=" + assigneesWidget + ", descriptionWidget=" + descriptionWidget + ", hierarchyWidget=" + hierarchyWidget + ", id=" + id + ", labelsWidget=" + labelsWidget + ", startAndDueDateWidget=" + startAndDueDateWidget + ", stateEvent=" + stateEvent + ", title=" + title + ", rolledupDatesWidget=" + rolledupDatesWidget + "]";
     }
 
 }

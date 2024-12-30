@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/simon-weimann/gitlab4j-api/commit/7842c72bad980f2e582b649a91fce326c7dba7e1
+//DEPS https://github.com/jmini/gitlab4j-api/commit/5e957318fd44d1ed5d327188b98dd65c59dfa9dd
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.models.*;
-import org.gitlab4j.api.models.ImpersonationToken.Scope;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -36,11 +35,17 @@ public class GroupScript implements Callable<Integer> {
     @Option(names = { "-g", "--group" }, description = "group id")
     private String group;
 
+    @Option(names = { "-s", "--skip" }, description = "skipped group ids")
+    private List<Integer> skipped;
+
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
-        GET_GROUP
+        GET_GROUP, GET_ALL_GROUPS, GET_SUB_GROUPS, GET_DESCENDANT_GROUPS, GET_GROUP_LABELS, GET_GROUP_UPLOADS
     }
 
     @Override
@@ -56,20 +61,69 @@ public class GroupScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case GET_GROUP:
                 ensureExists(group, "group");
-                var result = gitLabApi.getGroupApi()
+                var groupResponse = gitLabApi.getGroupApi()
                         .getGroup(idOrPath(group));
-                System.out.println(result);
+                System.out.println(groupResponse);
+                break;
+            case GET_ALL_GROUPS:
+                var groups = gitLabApi.getGroupApi()
+                        .getGroups();
+                groups.stream()
+                        .sorted(Comparator.comparing(Group::getFullName))
+                        .forEach(g -> {
+                            System.out.println(g.getFullName());
+                        });
+                break;
+            case GET_SUB_GROUPS:
+                ensureExists(group, "group");
+                var subGroups = gitLabApi.getGroupApi()
+                        .getSubGroups(idOrPath(group));
+                for (Group g : subGroups) {
+                    System.out.println(g.getFullName());
+                }
+                break;
+            case GET_DESCENDANT_GROUPS:
+                ensureExists(group, "group");
+                GroupFilter filter = new GroupFilter()
+                        .withAllAvailable(true);
+                if (skipped != null) {
+                    filter.withSkipGroups(skipped);
+                }
+                var descendantGroups = gitLabApi.getGroupApi()
+                        .getDescendantGroups(idOrPath(group), filter);
+                for (Group g : descendantGroups) {
+                    System.out.println(g.getFullName());
+                }
+                break;
+            case GET_GROUP_LABELS:
+                ensureExists(group, "group");
+                var labelsResponse = gitLabApi.getLabelsApi()
+                        .getGroupLabels(idOrPath(group));
+                System.out.println(labelsResponse);
+                break;
+            case GET_GROUP_UPLOADS:
+                ensureExists(group, "group");
+                var uploadsResponse = gitLabApi.getGroupApi()
+                        .getUploadFiles(idOrPath(group));
+                System.out.println(uploadsResponse);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected value: " + action);
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
     private void ensureExists(Object value, String optionName) {

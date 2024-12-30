@@ -14,37 +14,32 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
-import org.gitlab4j.api.models.FileUpload;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-@Command(name = "FileUploadScript", mixinStandardHelpOptions = true, version = "FileUploadScript 0.1", description = "Tests with fileupaload in GitLab")
-class FileUploadScript implements Callable<Integer> {
+@Command(name = "AccessTokenScript", mixinStandardHelpOptions = true, version = "AccessTokenScript 0.1", description = "Tests for GitLab4J")
+public class AccessTokenScript implements Callable<Integer> {
 
     private static final String CONFIG_FILE_INITIAL_CONTENT = """
             GITLAB_URL=https://gitlab.com
             GITLAB_AUTH_VALUE=
             """;
 
-    @Option(names = { "-p", "--project" }, description = "project (id or path)")
-    private String project;
-
-    @Option(names = { "-g", "--group" }, description = "group")
-    private String group;
-
-    @Option(names = { "-f", "--file" }, description = "Path to the file to uplaod")
-    private String filePath;
-
-    @Option(names = { "-n", "--filename" }, description = "Filename in Gitab")
-    private String filename;
+    @Parameters(index = "0", description = "action to execute", defaultValue = "GET")
+    private Action action;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
     @Option(names = { "-v", "--verbose" }, description = "log http trafic")
     Boolean logHttp;
+
+    private static enum Action {
+        GET
+    }
 
     @Override
     public Integer call() throws Exception {
@@ -55,31 +50,19 @@ class FileUploadScript implements Callable<Integer> {
             file = configFile(Paths.get(""));
         }
         System.out.println("Reading config: " + file.toAbsolutePath());
-        Properties prop = configProperties(file);
-        String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
-        String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
-
-        filePathMandatory();
-        Path fileToUpload = Paths.get(filePath);
-        if (!Files.isReadable(file) || !Files.isRegularFile(fileToUpload)) {
-            throw new IllegalStateException("Can not find file: " + fileToUpload.toAbsolutePath());
-        }
+        final Properties prop = configProperties(file);
+        final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
+        final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
-            if (filename == null) {
-                filename = fileToUpload.getFileName()
-                        .toString();
-            }
-            if (project == null && group == null) {
-                throw new IllegalStateException("Project or group is mandatory");
-            } else if (project != null && group != null) {
-                throw new IllegalStateException("Project and group can't be set at the same time");
-            } else if (project != null) {
-                FileUpload uplaodedFile = gitLabApi.getProjectApi()
-                        .uploadFile(idOrPath(project), Files.newInputStream(fileToUpload), filename, null);
-                System.out.println(uplaodedFile);
-            } else if (group != null) {
-                throw new IllegalStateException("Upload on goup is not available, see: https://gitlab.com/gitlab-org/gitlab/-/issues/329615");
+            switch (action) {
+            case GET:
+                var selfPersonalAccessToken = gitLabApi.getPersonalAccessTokenApi()
+                        .getPersonalAccessToken();
+                System.out.println(selfPersonalAccessToken);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + action);
             }
         }
         return 0;
@@ -88,14 +71,14 @@ class FileUploadScript implements Callable<Integer> {
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
         if (logHttp != null && logHttp) {
             return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+                .withRequestResponseLogging(java.util.logging.Level.INFO) ;
         }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
-    private void filePathMandatory() {
-        if (filePath == null) {
-            throw new IllegalStateException("File is mandatory");
+    private void ensureExists(Object value, String optionName) {
+        if (value == null) {
+            throw new IllegalStateException("--" + optionName + " must be set");
         }
     }
 
@@ -106,47 +89,47 @@ class FileUploadScript implements Callable<Integer> {
         return value;
     }
 
-    public static Properties configProperties(Path configFile) {
+    public static Properties configProperties(final Path configFile) {
         try (InputStream is = new FileInputStream(configFile.toFile())) {
-            Properties properties = new Properties();
+            final Properties properties = new Properties();
             properties.load(is);
             return properties;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Can not read config file", e);
         }
     }
 
-    public static Path configFile(Path root) {
-        Path configFile = root.toAbsolutePath()
+    public static Path configFile(final Path root) {
+        final Path configFile = root.toAbsolutePath()
                 .resolve("gitlab-config.properties");
         if (!Files.isRegularFile(configFile)) {
             try {
                 Files.writeString(configFile, CONFIG_FILE_INITIAL_CONTENT);
                 throw new IllegalStateException(String.format("Configuration file '%s' does not exist. An empty configuration file was created", configFile.toAbsolutePath()));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalStateException("Can not write initial config file", e);
             }
         }
         return configFile;
     }
 
-    public static String readProperty(Properties p, String key) {
+    public static String readProperty(final Properties p, final String key) {
         if (!p.containsKey(key)) {
             throw new IllegalStateException(String.format("Configuration file does not contains key '%s'", key));
         }
-        String value = p.getProperty(key);
+        final String value = p.getProperty(key);
         if (value == null || value.isBlank()) {
             throw new IllegalStateException(String.format("Key '%s' is not defined in configuration file", key));
         }
         return value;
     }
 
-    public static String readProperty(Properties p, String key, String defaultValue) {
+    public static String readProperty(final Properties p, final String key, final String defaultValue) {
         return p.getProperty(key, defaultValue);
     }
 
-    public static void main(String... args) {
-        int exitCode = new CommandLine(new FileUploadScript()).execute(args);
+    public static void main(final String... args) {
+        final int exitCode = new CommandLine(new AccessTokenScript()).execute(args);
         System.exit(exitCode);
     }
 }
