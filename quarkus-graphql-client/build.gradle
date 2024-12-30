@@ -19,7 +19,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-rest'
     implementation 'io.quarkus:quarkus-smallrye-graphql-client'
     implementation 'io.quarkus:quarkus-arc'
-    implementation 'com.github.unblu:gitlab-workitem-graphql-client:0dde568aa43f45079cc646b23fed8c807fe7fa1a'
+    implementation 'com.github.unblu:gitlab-workitem-graphql-client:5964fd413862a9e63180c8e29d79232baf946292'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
 }
