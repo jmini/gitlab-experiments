@@ -55,6 +55,9 @@ public class GroupAccessTokenScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         LIST_GROUP_ACCESS_TOKEN, GET_GROUP_ACCESS_TOKEN, CREATE_GROUP_ACCESS_TOKEN, ROTATE_GROUP_ACCESS_TOKEN, REVOKE_GROUP_ACCESS_TOKEN
     }
@@ -74,7 +77,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
 
         ensureExists(group, "group");
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
             switch (action) {
             case LIST_GROUP_ACCESS_TOKEN:
                 var tokens = gitLabApi.getGroupApi()
@@ -106,6 +109,14 @@ public class GroupAccessTokenScript implements Callable<Integer> {
             }
         }
         return 0;
+    }
+
+    private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
+        if (logHttp != null && logHttp) {
+            return new GitLabApi(gitLabUrl, gitLabAuthValue)
+                    .withRequestResponseLogging(java.util.logging.Level.INFO);
+        }
+        return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
     private Long getTokenId(GitLabApi gitLabApi) throws GitLabApiException {
