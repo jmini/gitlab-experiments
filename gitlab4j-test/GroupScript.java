@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/jmini/gitlab4j-api/commit/5e957318fd44d1ed5d327188b98dd65c59dfa9dd
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.8
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ public class GroupScript implements Callable<Integer> {
     private String group;
 
     @Option(names = { "-s", "--skip" }, description = "skipped group ids")
-    private List<Integer> skipped;
+    private List<Long> skipped;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;

@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.7
+//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.8
 //JAVA 17
 
 import java.io.FileInputStream;
