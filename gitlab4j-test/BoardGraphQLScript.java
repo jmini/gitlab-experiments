@@ -1,9 +1,12 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/45bd428c470cd8a8a57f411a8ca0127a55be1240
+//DEPS com.unblu.gitlab:gitlab-workitem-graphql-client:1.0.0-SNAPSHOT
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
+//DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
+//RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+//FILES logging.properties
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,9 +20,30 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import org.gitlab4j.api.GitLabApiException;
+
 import graphql.gitlab.api.WorkitemClientApi;
-import graphql.gitlab.model.BoardConnection;
+import graphql.gitlab.model.BoardID;
+import graphql.gitlab.model.BoardList;
+import graphql.gitlab.model.BoardsEpicBoardID;
+import graphql.gitlab.model.BoardsEpicListID;
+import graphql.gitlab.model.CreateBoardInput;
+import graphql.gitlab.model.CreateBoardPayload;
+import graphql.gitlab.model.DestroyBoardInput;
+import graphql.gitlab.model.DestroyBoardPayload;
+import graphql.gitlab.model.DestroyEpicBoardInput;
+import graphql.gitlab.model.DestroyEpicBoardPayload;
+import graphql.gitlab.model.EpicBoardCreateInput;
+import graphql.gitlab.model.EpicBoardCreatePayload;
+import graphql.gitlab.model.EpicBoardUpdateInput;
+import graphql.gitlab.model.EpicBoardUpdatePayload;
+import graphql.gitlab.model.EpicList;
+import graphql.gitlab.model.GroupContainingEpicBoard;
+import graphql.gitlab.model.GroupContainingIssueBoard;
+import graphql.gitlab.model.ListID;
 import graphql.gitlab.model.ProjectContainingIssueBoard;
+import graphql.gitlab.model.UpdateBoardInput;
+import graphql.gitlab.model.UpdateBoardPayload;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -47,10 +71,16 @@ public class BoardGraphQLScript implements Callable<Integer> {
     private String group;
 
     @Option(names = { "-i", "--id" }, description = "board id")
-    private Long boardId;
+    private String boardId;
+
+    @Option(names = { "--hideBacklogList" }, description = "hide backlog List")
+    private Boolean hideBacklogList;
+
+    @Option(names = { "--hideClosedList" }, description = "hide closed List")
+    private Boolean hideClosedList;
 
     @Option(names = { "-l", "--listId" }, description = "board list id")
-    private Long listId;
+    private String listId;
 
     @Option(names = { "-n", "--name" }, description = "name")
     private String name;
@@ -68,7 +98,7 @@ public class BoardGraphQLScript implements Callable<Integer> {
     String configFile;
 
     private static enum Action {
-        GET_BOARDS, GET_BOARD, CREATE_BOARD, UPDATE_BOARD, DELETE_BOARD, GET_BOARD_LISTS, GET_BOARD_LIST, CREATE_BOARD_LIST, UPDATE_BOARD_LIST, DELETE_BOARD_LIST
+        GET_BOARDS, CREATE_BOARD, UPDATE_BOARD, DELETE_BOARD, GET_BOARD_LIST, CREATE_BOARD_LIST, UPDATE_BOARD_LIST, DELETE_BOARD_LIST
     }
 
     private static enum Type {
@@ -88,119 +118,27 @@ public class BoardGraphQLScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-        if (type == Type.EPIC) {
-            ensureExists(group, "group");
-            if (project != null) {
-                throw new IllegalStateException("Project can't be set for Epic board");
-            }
-        } else if (type == Type.ISSUE) {
-            ensureOneExists(Holder.of(project, "project"), Holder.of(group, "group"));
-        } else {
-            throw new IllegalStateException("Type is unexpected");
-        }
-
         WorkitemClientApi api = createGraphQLWorkitemClientApi(gitLabUrl, gitLabAuthValue);
         switch (action) {
         case GET_BOARDS:
-            BoardConnection boards;
-            if (project != null) {
-                ProjectContainingIssueBoard p = api.projectContainingIssueBoard(project);
-                boards = p.getBoards();
-                //                boards = gitLabApi.getBoardsApi()
-                //                        .getProjectIssueBoards(idOrPath(project));
-            } else if (type == Type.ISSUE) {
-                //                boards = gitLabApi.getBoardsApi()
-                //                        .getGroupIssueBoards(idOrPath(group));
-                boards = null;
-            } else {
-                //                boards = gitLabApi.getBoardsApi()
-                //                        .getGroupEpicBoards(idOrPath(group));
-                boards = null;
-            }
-            System.out.println(boards);
-            break;
-        case GET_BOARD:
-            ensureExists(boardId, "id");
-            //            Board board;
-            if (project != null) {
-                //                board = gitLabApi.getBoardsApi()
-                //                        .getProjectIssueBoard(idOrPath(project), boardId);
-            } else if (type == Type.ISSUE) {
-                //                board = gitLabApi.getBoardsApi()
-                //                        .getGroupIssueBoard(idOrPath(group), boardId);
-            } else {
-                //                board = gitLabApi.getBoardsApi()
-                //                        .getGroupEpicBoard(idOrPath(group), boardId);
-            }
-            //            System.out.println(board);
+            getBoards(api);
             break;
         case CREATE_BOARD:
-            ensureExists(name, "name");
-            //            Board created;
-            if (project != null) {
-                //                created = gitLabApi.getBoardsApi()
-                //                        .createProjectIssueBoard(idOrPath(project), name);
-            } else if (type == Type.ISSUE) {
-                //                created = gitLabApi.getBoardsApi()
-                //                        .createGroupIssueBoard(idOrPath(group), name);
-            } else {
-                throw new IllegalStateException("Not implemented at server side");
-            }
-            //            System.out.println(created);
+            createBoard(api);
             break;
         case UPDATE_BOARD:
-            ensureExists(boardId, "id");
-            //            Board updated = updateBoard(gitLabApi);
-            //            System.out.println(updated);
+            updateBoard(api);
             break;
         case DELETE_BOARD:
-            ensureExists(boardId, "id");
-            if (project != null) {
-                //                gitLabApi.getBoardsApi()
-                //                        .deleteProjectIssueBoard(idOrPath(project), boardId);
-            } else if (type == Type.ISSUE) {
-                //                gitLabApi.getBoardsApi()
-                //                        .deleteGroupIssueBoard(idOrPath(group), boardId);
-            } else {
-                throw new IllegalStateException("Not implemented at server side");
-            }
-            System.out.println("board " + boardId + " deleted");
-            break;
-        case GET_BOARD_LISTS:
-            ensureExists(boardId, "id");
-            //            List<BoardList> boardLists;
-            if (project != null) {
-                //                boardLists = gitLabApi.getBoardsApi()
-                //                        .getProjectIssueBoardLists(idOrPath(project), boardId);
-            } else if (type == Type.ISSUE) {
-                //                boardLists = gitLabApi.getBoardsApi()
-                //                        .getGroupIssueBoardLists(idOrPath(group), boardId);
-            } else {
-                //                boardLists = gitLabApi.getBoardsApi()
-                //                        .getGroupEpicBoardLists(idOrPath(group), boardId);
-            }
-            //            System.out.println(boardLists);
+            deleteBoard(api);
             break;
         case GET_BOARD_LIST:
-            ensureExists(boardId, "id");
-            ensureExists(listId, "listId");
-            //            BoardList boardList;
-            if (project != null) {
-                //                boardList = gitLabApi.getBoardsApi()
-                //                        .getProjectIssueBoardList(idOrPath(project), boardId, listId);
-            } else if (type == Type.ISSUE) {
-                //                boardList = gitLabApi.getBoardsApi()
-                //                        .getGroupIssueBoardList(idOrPath(group), boardId, listId);
-            } else {
-                //                boardList = gitLabApi.getBoardsApi()
-                //                        .getGroupEpicBoardList(idOrPath(group), boardId, listId);
-            }
-            //            System.out.println(boardList);
+            getBoardList(api);
             break;
         case CREATE_BOARD_LIST:
             ensureExists(boardId, "id");
-            //            BoardList createdList = createList(gitLabApi);
-            //            System.out.println(createdList);
+            //BoardList createdList = createList(gitLabApi);
+            //System.out.println(createdList);
             break;
         case UPDATE_BOARD_LIST:
             ensureExists(boardId, "id");
@@ -237,6 +175,100 @@ public class BoardGraphQLScript implements Callable<Integer> {
         }
 
         return 0;
+    }
+
+    private void getBoards(WorkitemClientApi api) {
+        ensureNamespace();
+        if (type == Type.EPIC) {
+            GroupContainingEpicBoard g = api.getEpicBoardsInGroup(group);
+            System.out.println(g.getEpicBoards());
+        } else if (project != null) {
+            ProjectContainingIssueBoard p = api.getIssueBoardsInProject(project);
+            System.out.println(p.getBoards());
+        } else {
+            GroupContainingIssueBoard g = api.getIssueBoardsInGroup(group);
+            System.out.println(g.getBoards());
+        }
+    }
+
+    private void createBoard(WorkitemClientApi api) {
+        ensureNamespace();
+        ensureExists(name, "name");
+        if (type == Type.EPIC) {
+            EpicBoardCreatePayload response = api.createEpicBoard(new EpicBoardCreateInput()
+                    .setName(name)
+                    .setGroupPath(group));
+            System.out.println(response);
+        } else {
+            CreateBoardInput request = new CreateBoardInput()
+                    .setName(name);
+            if (project != null) {
+                request.setProjectPath(project);
+                CreateBoardPayload response = api.createIssueBoard(request);
+                System.out.println(response);
+            } else {
+                request.setGroupPath(group);
+                CreateBoardPayload response = api.createIssueBoard(request);
+                System.out.println(response);
+            }
+        }
+    }
+
+    private void updateBoard(WorkitemClientApi api) throws GitLabApiException {
+        ensureExists(boardId, "id");
+        if (type == Type.EPIC) {
+            EpicBoardUpdatePayload response = api.updateEpicBoard(new EpicBoardUpdateInput()
+                    .setId(new BoardsEpicBoardID(boardId))
+                    .setName(name)
+                    .setHideBacklogList(hideBacklogList)
+                    .setHideClosedList(hideClosedList));
+            System.out.println(response);
+        } else {
+            UpdateBoardPayload response = api.updateIssueBoard(new UpdateBoardInput()
+                    .setId(new BoardID(boardId))
+                    .setName(name)
+                    .setHideBacklogList(hideBacklogList)
+                    .setHideClosedList(hideClosedList));
+            System.out.println(response);
+        }
+    }
+
+    private void deleteBoard(WorkitemClientApi api) throws GitLabApiException {
+        ensureExists(boardId, "id");
+        if (type == Type.EPIC) {
+            DestroyEpicBoardPayload response = api.deleteEpicBoard(new DestroyEpicBoardInput()
+                    .setId(new BoardsEpicBoardID(boardId)));
+            System.out.println(response);
+        } else {
+            DestroyBoardPayload response = api.deleteIssueBoard(new DestroyBoardInput()
+                    .setId(new BoardID(boardId)));
+            System.out.println(response);
+        }
+        System.out.println("board " + boardId + " deleted");
+    }
+
+    private void getBoardList(WorkitemClientApi api) {
+        ensureExists(listId, "listId");
+        if (type == Type.ISSUE) {
+            BoardList l = api.getIssueBoardList(new ListID(listId));
+            System.out.println(l);
+        } else {
+            EpicList l = api.getEpicBoardList(new BoardsEpicListID(listId));
+            System.out.println(l);
+        }
+    }
+
+    private void ensureNamespace() {
+        if (type == Type.EPIC) {
+            ensureExists(group, "group");
+            if (project != null) {
+                throw new IllegalStateException("Project can't be set for Epic board");
+            }
+        } else if (type == Type.ISSUE) {
+            ensureOneExists(Holder.of(project, "project"), Holder.of(group, "group"));
+        } else {
+            throw new IllegalStateException("Type is unexpected");
+        }
     }
 
     static WorkitemClientApi createGraphQLWorkitemClientApi(String gitLabUrl, String gitlabToken) {
