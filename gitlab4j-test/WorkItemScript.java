@@ -3,7 +3,10 @@
 //DEPS info.picocli:picocli:4.6.3
 //DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/42111c3e6f4fe6a3970695e578d70a2169e330ab
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
+//DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
+//RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+//FILES logging.properties
 
 import java.io.FileInputStream;
 import java.io.IOException;
