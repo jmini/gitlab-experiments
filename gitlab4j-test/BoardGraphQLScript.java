@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/f36726404b311bab0d5df41eff8072950fb9f97c
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/e70fa10b68363bf6f84050fd3f2a71d1f63c04cc
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
@@ -44,11 +44,14 @@ import graphql.gitlab.model.EpicBoardListDestroyPayload;
 import graphql.gitlab.model.EpicBoardUpdateInput;
 import graphql.gitlab.model.EpicBoardUpdatePayload;
 import graphql.gitlab.model.EpicList;
-import graphql.gitlab.model.GroupContainingEpicBoard;
-import graphql.gitlab.model.GroupContainingIssueBoard;
+import graphql.gitlab.model.GroupContainingEpicBoards;
+import graphql.gitlab.model.GroupContainingIssueBoards;
+import graphql.gitlab.model.GroupContainingSingleEpicBoard;
+import graphql.gitlab.model.GroupContainingSingleIssueBoard;
 import graphql.gitlab.model.LabelID;
 import graphql.gitlab.model.ListID;
-import graphql.gitlab.model.ProjectContainingIssueBoard;
+import graphql.gitlab.model.ProjectContainingIssueBoards;
+import graphql.gitlab.model.ProjectContainingSingleIssueBoard;
 import graphql.gitlab.model.UpdateBoardInput;
 import graphql.gitlab.model.UpdateBoardListInput;
 import graphql.gitlab.model.UpdateBoardListPayload;
@@ -110,7 +113,7 @@ public class BoardGraphQLScript implements Callable<Integer> {
     String configFile;
 
     private static enum Action {
-        GET_BOARDS, CREATE_BOARD, UPDATE_BOARD, DELETE_BOARD, GET_BOARD_LIST, CREATE_BOARD_LIST, UPDATE_BOARD_LIST, DELETE_BOARD_LIST
+        GET_BOARDS, GET_BOARD, CREATE_BOARD, UPDATE_BOARD, DELETE_BOARD, GET_BOARD_LIST, CREATE_BOARD_LIST, UPDATE_BOARD_LIST, DELETE_BOARD_LIST
     }
 
     private static enum Type {
@@ -134,6 +137,9 @@ public class BoardGraphQLScript implements Callable<Integer> {
         switch (action) {
         case GET_BOARDS:
             getBoards(api);
+            break;
+        case GET_BOARD:
+            getBoard(api);
             break;
         case CREATE_BOARD:
             createBoard(api);
@@ -166,14 +172,29 @@ public class BoardGraphQLScript implements Callable<Integer> {
     private void getBoards(WorkitemClientApi api) {
         ensureNamespace();
         if (type == Type.EPIC) {
-            GroupContainingEpicBoard g = api.getEpicBoardsInGroup(group);
+            GroupContainingEpicBoards g = api.getEpicBoardsInGroup(group);
             System.out.println(g.getEpicBoards());
         } else if (project != null) {
-            ProjectContainingIssueBoard p = api.getIssueBoardsInProject(project);
+            ProjectContainingIssueBoards p = api.getIssueBoardsInProject(project);
             System.out.println(p.getBoards());
         } else {
-            GroupContainingIssueBoard g = api.getIssueBoardsInGroup(group);
+            GroupContainingIssueBoards g = api.getIssueBoardsInGroup(group);
             System.out.println(g.getBoards());
+        }
+    }
+
+    private void getBoard(WorkitemClientApi api) {
+        ensureNamespace();
+        ensureExists(boardId, "id");
+        if (type == Type.EPIC) {
+            GroupContainingSingleEpicBoard g = api.getEpicBoardInGroup(group, new BoardsEpicBoardID(boardId));
+            System.out.println(g.getEpicBoard());
+        } else if (project != null) {
+            ProjectContainingSingleIssueBoard p = api.getIssueBoardInProject(project, new BoardID(boardId));
+            System.out.println(p.getBoard());
+        } else {
+            GroupContainingSingleIssueBoard g = api.getIssueBoardInGroup(group, new BoardID(boardId));
+            System.out.println(g.getBoard());
         }
     }
 
