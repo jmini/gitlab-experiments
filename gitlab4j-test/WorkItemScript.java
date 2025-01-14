@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/42111c3e6f4fe6a3970695e578d70a2169e330ab
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/b098854092bba520dc6f770d39b11197244d3064
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
@@ -20,6 +20,9 @@ import java.util.concurrent.Callable;
 
 import graphql.gitlab.api.WorkitemClientApi;
 import graphql.gitlab.model.WorkItemConnection;
+import graphql.gitlab.model.WorkItemDeleteInput;
+import graphql.gitlab.model.WorkItemDeletePayload;
+import graphql.gitlab.model.WorkItemID;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -40,6 +43,9 @@ public class WorkItemScript implements Callable<Integer> {
     @Option(names = { "-n", "--namespace" }, description = "namespace path")
     private String namespace;
 
+    @Option(names = { "-i", "--id" }, description = "workitem id")
+    private String id;
+
     @Option(names = { "-r", "--ref", "--reference" }, description = "references in the namespace")
     private List<String> refs;
 
@@ -50,7 +56,7 @@ public class WorkItemScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET_WORKITEM
+        GET_WORKITEM, DELETE_WORKITEM
     }
 
     @Override
@@ -69,16 +75,30 @@ public class WorkItemScript implements Callable<Integer> {
         WorkitemClientApi api = createGraphQLWorkitemClientApi(gitLabUrl, gitLabAuthValue);
         switch (action) {
         case GET_WORKITEM:
-            ensureExists(namespace, "namespace");
-            ensureExists(refs, "reference");
-            WorkItemConnection response = api.workItemsByReference(namespace, refs, null);
-            System.out.println(response);
+            getWorkItem(api);
+            break;
+        case DELETE_WORKITEM:
+            deleteWorkItem(api);
             break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
         }
 
         return 0;
+    }
+
+    private void getWorkItem(WorkitemClientApi api) {
+        ensureExists(namespace, "namespace");
+        ensureExists(refs, "reference");
+        WorkItemConnection response = api.workItemsByReference(namespace, refs, null);
+        System.out.println(response);
+    }
+
+    private void deleteWorkItem(WorkitemClientApi api) {
+        ensureExists(id, "id");
+        WorkItemDeletePayload response = api.workItemDelete(new WorkItemDeleteInput()
+                .setId(new WorkItemID(id)));
+        System.out.println(response);
     }
 
     static WorkitemClientApi createGraphQLWorkitemClientApi(String gitLabUrl, String gitlabToken) {
