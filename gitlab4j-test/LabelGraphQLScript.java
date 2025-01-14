@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/f36726404b311bab0d5df41eff8072950fb9f97c
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/f98e830badf88a74e459807f14c7db3b4a32c012
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
@@ -50,8 +50,14 @@ public class LabelGraphQLScript implements Callable<Integer> {
     @Option(names = { "-g", "--group" }, description = "group")
     private String group;
 
-    @Option(names = { "-a", "--includeAncestorGroups" }, description = "include ancestor groups when fetching labels")
+    @Option(names = { "-a", "--includeAncestorGroups" }, description = "include ancestor groups when fetching labels in project")
     private boolean includeAncestorGroups;
+
+    @Option(names = { "-d", "--includeDescendantGroups" }, description = "include descendant groups when fetching labels in group")
+    private boolean includeDescendantGroups;
+
+    @Option(names = { "-o", "--onlyGroupLabels" }, description = "set onlyGroupLabels when fetching labels in group")
+    private boolean onlyGroupLabels;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
@@ -95,12 +101,14 @@ public class LabelGraphQLScript implements Callable<Integer> {
             labels = getLabels(apiCall, lGetter);
         } else if (group != null) {
             System.out.println("Reading gitlab labels and metadata from group " + group);
-            Function<String, Group> apiCall = (from) -> api.group(group, includeAncestorGroups, from);
+            Function<String, Group> apiCall = (from) -> api.group(group, includeDescendantGroups, onlyGroupLabels, from);
             Function<Group, LabelConnection> lGetter = Group::getLabels;
             labels = getLabels(apiCall, lGetter);
         } else {
             throw new IllegalStateException("Unexpected");
         }
+
+        System.out.println("---> labels found: " + labels.size());
 
         for (Label label : labels) {
             System.out.println(label.getId() + " " + label.getTitle());
