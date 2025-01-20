@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/b098854092bba520dc6f770d39b11197244d3064
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/b93a9f97e53e2647a0531c33b2dc67be940fd80c
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
@@ -23,6 +23,9 @@ import graphql.gitlab.model.WorkItemConnection;
 import graphql.gitlab.model.WorkItemDeleteInput;
 import graphql.gitlab.model.WorkItemDeletePayload;
 import graphql.gitlab.model.WorkItemID;
+import graphql.gitlab.model.WorkItemUpdateInput;
+import graphql.gitlab.model.WorkItemUpdatePayload;
+import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInput;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -46,6 +49,9 @@ public class WorkItemScript implements Callable<Integer> {
     @Option(names = { "-i", "--id" }, description = "workitem id")
     private String id;
 
+    @Option(names = { "-p", "--parentId" }, description = "workitem parentId")
+    private String parentId;
+
     @Option(names = { "-r", "--ref", "--reference" }, description = "references in the namespace")
     private List<String> refs;
 
@@ -56,7 +62,7 @@ public class WorkItemScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET_WORKITEM, DELETE_WORKITEM
+        GET_WORKITEM, DELETE_WORKITEM, ADD_PARENT, REMOVE_PARENT
     }
 
     @Override
@@ -73,12 +79,19 @@ public class WorkItemScript implements Callable<Integer> {
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         WorkitemClientApi api = createGraphQLWorkitemClientApi(gitLabUrl, gitLabAuthValue);
+
         switch (action) {
         case GET_WORKITEM:
             getWorkItem(api);
             break;
         case DELETE_WORKITEM:
             deleteWorkItem(api);
+            break;
+        case ADD_PARENT:
+            addParent(api);
+            break;
+        case REMOVE_PARENT:
+            deleteParent(api);
             break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
@@ -97,7 +110,28 @@ public class WorkItemScript implements Callable<Integer> {
     private void deleteWorkItem(WorkitemClientApi api) {
         ensureExists(id, "id");
         WorkItemDeletePayload response = api.workItemDelete(new WorkItemDeleteInput()
-                .setId(new WorkItemID(id)));
+                .setId(new WorkItemID(id)) //
+        );
+        System.out.println(response);
+    }
+
+    private void addParent(WorkitemClientApi api) {
+        ensureExists(id, "id");
+        ensureExists(parentId, "parentId");
+        WorkItemUpdatePayload response = api.workItemUpdate(new WorkItemUpdateInput()
+                .setId(new WorkItemID(id))
+                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInput() //
+                        .setParentId(new WorkItemID(parentId)) //
+                ) //
+        );
+        System.out.println(response);
+    }
+
+    private void deleteParent(WorkitemClientApi api) {
+        ensureExists(id, "id");
+        WorkItemUpdatePayload response = api.workItemUpdate(new WorkItemUpdateInput()
+                .setId(new WorkItemID(id))
+                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInput().setParentId(null)));
         System.out.println(response);
     }
 
