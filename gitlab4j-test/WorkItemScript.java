@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/b93a9f97e53e2647a0531c33b2dc67be940fd80c
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/96673d87850c148ef174fbf4c5d163db745ae3ea
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
@@ -25,7 +25,8 @@ import graphql.gitlab.model.WorkItemDeletePayload;
 import graphql.gitlab.model.WorkItemID;
 import graphql.gitlab.model.WorkItemUpdateInput;
 import graphql.gitlab.model.WorkItemUpdatePayload;
-import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInput;
+import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInputWithChildren;
+import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInputWithParent;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -52,7 +53,10 @@ public class WorkItemScript implements Callable<Integer> {
     @Option(names = { "-p", "--parentId" }, description = "workitem parentId")
     private String parentId;
 
-    @Option(names = { "-r", "--ref", "--reference" }, description = "references in the namespace")
+    @Option(names = { "-s", "--childId" }, description = "workitem childrenIds")
+    private List<String> childrenIds;
+
+    @Option(names = { "-r", "--h", "--reference" }, description = "references in the namespace")
     private List<String> refs;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
@@ -62,7 +66,7 @@ public class WorkItemScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET_WORKITEM, DELETE_WORKITEM, ADD_PARENT, REMOVE_PARENT
+        GET_WORKITEM, DELETE_WORKITEM, ADD_PARENT, REMOVE_PARENT, ADD_CHILDREN
     }
 
     @Override
@@ -93,6 +97,9 @@ public class WorkItemScript implements Callable<Integer> {
         case REMOVE_PARENT:
             deleteParent(api);
             break;
+        case ADD_CHILDREN:
+            addChildren(api);
+            break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
         }
@@ -120,7 +127,7 @@ public class WorkItemScript implements Callable<Integer> {
         ensureExists(parentId, "parentId");
         WorkItemUpdatePayload response = api.workItemUpdate(new WorkItemUpdateInput()
                 .setId(new WorkItemID(id))
-                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInput() //
+                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInputWithParent() //
                         .setParentId(new WorkItemID(parentId)) //
                 ) //
         );
@@ -131,7 +138,21 @@ public class WorkItemScript implements Callable<Integer> {
         ensureExists(id, "id");
         WorkItemUpdatePayload response = api.workItemUpdate(new WorkItemUpdateInput()
                 .setId(new WorkItemID(id))
-                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInput().setParentId(null)));
+                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInputWithParent().setParentId(null)));
+        System.out.println(response);
+    }
+
+    private void addChildren(WorkitemClientApi api) {
+        ensureExists(id, "id");
+        ensureExists(childrenIds, "childId");
+        WorkItemUpdatePayload response = api.workItemUpdate(new WorkItemUpdateInput()
+                .setId(new WorkItemID(id))
+                .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInputWithChildren() //
+                        .setChildrenIds(childrenIds.stream()
+                                .map(WorkItemID::new)
+                                .toList()) //
+                ) //
+        );
         System.out.println(response);
     }
 
