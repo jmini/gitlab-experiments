@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import graphql.gitlab.api.WorkitemClientApi;
+import graphql.gitlab.model.WorkItem;
 import graphql.gitlab.model.WorkItemConnection;
 import graphql.gitlab.model.WorkItemDeleteInput;
 import graphql.gitlab.model.WorkItemDeletePayload;
@@ -56,7 +57,7 @@ public class WorkItemScript implements Callable<Integer> {
     @Option(names = { "-s", "--childId" }, description = "workitem childrenIds")
     private List<String> childrenIds;
 
-    @Option(names = { "-r", "--h", "--reference" }, description = "references in the namespace")
+    @Option(names = { "-r", "--ref", "--reference" }, description = "references in the namespace")
     private List<String> refs;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
@@ -77,10 +78,18 @@ public class WorkItemScript implements Callable<Integer> {
         } else {
             file = configFile(Paths.get(""));
         }
-        System.out.println("Reading config: " + file.toAbsolutePath());
-        final Properties prop = configProperties(file);
-        final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
-        final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
+        final String gitLabUrl;
+        final String gitLabAuthValue;
+        if (Files.isRegularFile(file)) {
+            System.out.println("Reading config: " + file.toAbsolutePath());
+            final Properties prop = configProperties(file);
+            gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
+            gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
+        } else {
+            System.out.println("Config file does not exists: " + file.toAbsolutePath());
+            gitLabUrl = "https://gitlab.com";
+            gitLabAuthValue = null;
+        }
 
         WorkitemClientApi api = createGraphQLWorkitemClientApi(gitLabUrl, gitLabAuthValue);
 
@@ -108,10 +117,16 @@ public class WorkItemScript implements Callable<Integer> {
     }
 
     private void getWorkItem(WorkitemClientApi api) {
-        ensureExists(namespace, "namespace");
-        ensureExists(refs, "reference");
-        WorkItemConnection response = api.workItemsByReference(namespace, refs, null);
-        System.out.println(response);
+        if (id != null) {
+            WorkItem response = api.workItem(new WorkItemID(id));
+            //System.out.println(response);
+            printWorkItem(response);
+        } else {
+            ensureExists(namespace, "namespace");
+            ensureExists(refs, "reference");
+            WorkItemConnection response = api.workItemsByReference(namespace, refs, null);
+            System.out.println(response);
+        }
     }
 
     private void deleteWorkItem(WorkitemClientApi api) {
@@ -156,13 +171,19 @@ public class WorkItemScript implements Callable<Integer> {
         System.out.println(response);
     }
 
+    private void printWorkItem(WorkItem item) {
+        System.out.println(item.getId() + " " + item.getTitle() + " " + item.getWebUrl());
+    }
+
     static WorkitemClientApi createGraphQLWorkitemClientApi(String gitLabUrl, String gitlabToken) {
-        WorkitemClientApi gqlApi = TypesafeGraphQLClientBuilder.newBuilder()
+        TypesafeGraphQLClientBuilder builder = TypesafeGraphQLClientBuilder.newBuilder()
                 .endpoint(gitLabUrl + "/api/graphql")
-                .header("Authorization", "Bearer " + gitlabToken)
-                .allowUnexpectedResponseFields(true)
-                .build(WorkitemClientApi.class);
-        return gqlApi;
+                .allowUnexpectedResponseFields(true);
+        if (gitlabToken != null) {
+            builder.header("Authorization", "Bearer " + gitlabToken);
+        }
+
+        return builder.build(WorkitemClientApi.class);
     }
 
     private void ensureExists(Object value, String optionName) {
@@ -184,14 +205,6 @@ public class WorkItemScript implements Callable<Integer> {
     public static Path configFile(final Path root) {
         final Path configFile = root.toAbsolutePath()
                 .resolve("gitlab-config.properties");
-        if (!Files.isRegularFile(configFile)) {
-            try {
-                Files.writeString(configFile, CONFIG_FILE_INITIAL_CONTENT);
-                throw new IllegalStateException(String.format("Configuration file '%s' does not exist. An empty configuration file was created", configFile.toAbsolutePath()));
-            } catch (final IOException e) {
-                throw new IllegalStateException("Can not write initial config file", e);
-            }
-        }
         return configFile;
     }
 
