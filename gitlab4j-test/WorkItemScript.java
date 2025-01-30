@@ -1,8 +1,8 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/96673d87850c148ef174fbf4c5d163db745ae3ea
-//DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/c9329cfc1c6fb35da6862869f3135045f7f08574
+//DEPS patched.unblu.io.smallrye:smallrye-graphql-client-implementation-vertx:2.12.2-unblu-2
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import graphql.gitlab.api.WorkitemClientApi;
+import graphql.gitlab.model.Date;
 import graphql.gitlab.model.WorkItem;
 import graphql.gitlab.model.WorkItemConnection;
 import graphql.gitlab.model.WorkItemDeleteInput;
@@ -28,6 +29,7 @@ import graphql.gitlab.model.WorkItemUpdateInput;
 import graphql.gitlab.model.WorkItemUpdatePayload;
 import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInputWithChildren;
 import graphql.gitlab.model.WorkItemWidgetHierarchyUpdateInputWithParent;
+import graphql.gitlab.model.WorkItemWidgetStartAndDueDateUpdateInput;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -57,6 +59,9 @@ public class WorkItemScript implements Callable<Integer> {
     @Option(names = { "-s", "--childId" }, description = "workitem childrenIds")
     private List<String> childrenIds;
 
+    @Option(names = { "-d", "--dueDate" }, description = "workitem dueDate")
+    private String dueDate;
+
     @Option(names = { "-r", "--ref", "--reference" }, description = "references in the namespace")
     private List<String> refs;
 
@@ -67,7 +72,7 @@ public class WorkItemScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET_WORKITEM, DELETE_WORKITEM, ADD_PARENT, REMOVE_PARENT, ADD_CHILDREN
+        GET_WORKITEM, DELETE_WORKITEM, ADD_PARENT, REMOVE_PARENT, ADD_CHILDREN, UPDATE_DUE_DATE
     }
 
     @Override
@@ -108,6 +113,9 @@ public class WorkItemScript implements Callable<Integer> {
             break;
         case ADD_CHILDREN:
             addChildren(api);
+            break;
+        case UPDATE_DUE_DATE:
+            updateDueDate(api);
             break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
@@ -155,6 +163,20 @@ public class WorkItemScript implements Callable<Integer> {
                 .setId(new WorkItemID(id))
                 .setHierarchyWidget(new WorkItemWidgetHierarchyUpdateInputWithParent().setParentId(null)));
         System.out.println(response);
+    }
+
+    private void updateDueDate(WorkitemClientApi api) {
+        ensureExists(id, "id");
+        WorkItemWidgetStartAndDueDateUpdateInput input = new WorkItemWidgetStartAndDueDateUpdateInput()
+                .setIsFixed(true);
+        if (dueDate != null) {
+            input.setDueDate(new Date(dueDate));
+        }
+        WorkItemUpdateInput request = new WorkItemUpdateInput()
+                .setId(new WorkItemID(id))
+                .setStartAndDueDateWidget(input);
+        WorkItemUpdatePayload updateResponse = api.workItemUpdate(request);
+        System.out.println(updateResponse);
     }
 
     private void addChildren(WorkitemClientApi api) {
