@@ -69,7 +69,10 @@ public class IssueScript implements Callable<Integer> {
         final String gitLabUrl = readProperty(prop, "GITLAB_URL", "https://gitlab.com");
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
-        try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+        try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case PROJECT_ISSUES:
                 ensureExists(project, "project");
@@ -133,10 +136,6 @@ public class IssueScript implements Callable<Integer> {
     }
 
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
-        if (logHttp != null && logHttp) {
-            return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                    .withRequestResponseLogging(java.util.logging.Level.INFO);
-        }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 

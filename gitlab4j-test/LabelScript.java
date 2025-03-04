@@ -72,6 +72,9 @@ public class LabelScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         LIST_LABELS, GET_LABEL, CREATE_LABEL, UPDATE_LABEL, DELETE_LABEL
     }
@@ -96,6 +99,9 @@ public class LabelScript implements Callable<Integer> {
             throw new IllegalStateException("One of --project and --group must be set");
         }
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case LIST_LABELS:
                 List<Label> labels;

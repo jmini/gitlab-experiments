@@ -41,6 +41,9 @@ public class JobScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         PRINT_JOB, PRINT_LOG, PRINT_ARTIFACT
     }
@@ -59,6 +62,9 @@ public class JobScript implements Callable<Integer> {
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case PRINT_JOB:
                 ensureExists(project, "project");
@@ -79,7 +85,7 @@ public class JobScript implements Callable<Integer> {
                 ensureExists(jobId, "jobId");
                 ensureExists(artifactPath, "artifactPath");
                 ArtifactsFile f = new ArtifactsFile();
-                f.setFilename(artifactPath); 
+                f.setFilename(artifactPath);
                 InputStream inputisStream = gitLabApi.getJobApi()
                         .downloadArtifactsFile(idOrPath(project), jobId, f);
                 String text = new String(inputisStream.readAllBytes(), StandardCharsets.UTF_8);

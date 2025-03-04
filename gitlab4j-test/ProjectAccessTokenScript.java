@@ -83,6 +83,9 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
         ensureExists(project, "project");
 
         try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case LIST_PROJECT_ACCESS_TOKEN:
                 var tokens = gitLabApi.getProjectApi()
@@ -118,10 +121,6 @@ public class ProjectAccessTokenScript implements Callable<Integer> {
     }
 
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
-        if (logHttp != null && logHttp) {
-            return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                    .withRequestResponseLogging(java.util.logging.Level.INFO);
-        }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 

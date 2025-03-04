@@ -53,6 +53,9 @@ public class NoteScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         GET_ISSUE_NOTES, GET_ISSUE_NOTE, CREATE_ISSUE_NOTE, UPDATE_ISSUE_NOTE, DELETE_ISSUE_NOTE
     }
@@ -74,6 +77,9 @@ public class NoteScript implements Callable<Integer> {
         ensureExists(issueIid, "issue");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case GET_ISSUE_NOTES:
                 var notes = gitLabApi.getNotesApi()

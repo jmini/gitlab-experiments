@@ -42,6 +42,9 @@ public class ReleaseScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         GET_RELEASES, GET_RELEASE
     }
@@ -60,6 +63,9 @@ public class ReleaseScript implements Callable<Integer> {
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             switch (action) {
             case GET_RELEASES:
                 ensureExists(project, "project");

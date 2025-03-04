@@ -47,6 +47,9 @@ public class SearchScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     @Override
     public Integer call() throws Exception {
         Path file;
@@ -65,6 +68,9 @@ public class SearchScript implements Callable<Integer> {
             return 1;
         }
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             final SearchApi searchApi = gitLabApi.getSearchApi();
             List<?> result;
             ensureExists(scope, "scope");
@@ -81,7 +87,7 @@ public class SearchScript implements Callable<Integer> {
                 System.out.println("Project search...");
                 ProjectSearchScope<Object> projectSearchScope = ProjectSearchScope.forValue(scope);
                 if (projectSearchScope == null) {
-                    System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: "+ ProjectSearchScope.values());
+                    System.out.println("Value '" + scope + "' is not expected for '--scope', possible values: " + ProjectSearchScope.values());
                     return 1;
                 }
                 result = searchApi.projectSearch(idOrPath(project), projectSearchScope, query);

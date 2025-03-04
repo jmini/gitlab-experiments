@@ -53,6 +53,9 @@ class TopicsScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         PRINT_TOPIC, PRINT_TOPICS, CREATE_TOPIC, UPDATE_TOPIC, UPDATE_TOPIC_AVATAR, DELETE_TOPIC_AVATAR, DELETE_TOPIC
     }
@@ -71,6 +74,9 @@ class TopicsScript implements Callable<Integer> {
         String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             System.out.println("Action " + action + " ...");
 
             Topic topic;

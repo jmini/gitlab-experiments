@@ -33,6 +33,9 @@ public class UserExistsScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     @Override
     public Integer call() throws Exception {
         Path file;
@@ -47,7 +50,11 @@ public class UserExistsScript implements Callable<Integer> {
         final String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
-            var result = gitLabApi.getUserApi().exists(username);
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
+            var result = gitLabApi.getUserApi()
+                    .exists(username);
             System.out.println(result);
         }
         return 0;

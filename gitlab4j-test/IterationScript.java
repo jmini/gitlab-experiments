@@ -38,7 +38,7 @@ public class IterationScript implements Callable<Integer> {
 
     @Option(names = { "-s", "--state" }, description = "state")
     private IterationFilter.IterationFilterState state;
- 
+
     @Option(names = { "-q", "--query" }, description = "query")
     private String search;
 
@@ -47,15 +47,18 @@ public class IterationScript implements Callable<Integer> {
 
     @Option(names = { "-n", "--includeAncestors" }, description = "include ancestors")
     private Boolean includeAncestors;
- 
+
     @Option(names = { "-a", "--after" }, description = "updated after")
     private Date updatedAfter;
- 
+
     @Option(names = { "-b", "--before" }, description = "updated before")
     private Date updatedBefore;
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
+
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
 
     @Override
     public Integer call() throws Exception {
@@ -73,44 +76,49 @@ public class IterationScript implements Callable<Integer> {
         if (project != null && group != null) {
             System.out.println("'--project' and '--group' can't be set at the same time");
             return 1;
-        } else  if (project == null && group == null) {
+        } else if (project == null && group == null) {
             System.out.println("One of '--project' and '--group' must be set");
             return 1;
         }
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             List<?> result;
             IterationFilter filter = null;
-            if(state != null) {
+            if (state != null) {
                 filter = existingOrNew(filter);
                 filter.setState(state);
             }
-            if(search != null) {
+            if (search != null) {
                 filter = existingOrNew(filter);
                 filter.setSearch(search);
             }
-            if(in != null) {
+            if (in != null) {
                 filter = existingOrNew(filter);
                 filter.setIn(in);
             }
-            if(includeAncestors != null) {
+            if (includeAncestors != null) {
                 filter = existingOrNew(filter);
                 filter.setIncludeAncestors(includeAncestors);
             }
-            if(updatedAfter != null) {
+            if (updatedAfter != null) {
                 filter = existingOrNew(filter);
                 filter.setUpdatedAfter(updatedAfter);
             }
-            if(updatedBefore != null) {
+            if (updatedBefore != null) {
                 filter = existingOrNew(filter);
                 filter.setUpdatedBefore(updatedBefore);
             }
 
             if (project != null) {
                 System.out.println("Project iteration...");
-                result = gitLabApi.getProjectApi().listProjectIterations(idOrPath(project), filter);
+                result = gitLabApi.getProjectApi()
+                        .listProjectIterations(idOrPath(project), filter);
             } else if (group != null) {
                 System.out.println("Group iteration...");
-                result = gitLabApi.getGroupApi().listGroupIterations(idOrPath(group), filter);
+                result = gitLabApi.getGroupApi()
+                        .listGroupIterations(idOrPath(group), filter);
             } else {
                 throw new IllegalArgumentException("Unexpected state (input parameters might be wrong)");
             }

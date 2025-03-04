@@ -39,6 +39,9 @@ public class GitLabCiYamlScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
+
     private static enum Action {
         GET_ALL, GET_SINGLE
     }
@@ -57,18 +60,23 @@ public class GitLabCiYamlScript implements Callable<Integer> {
         String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
-            switch(action) {
-                case GET_ALL:
-                    List<GitLabCiTemplateElement> list = gitLabApi.getGitLabCiYamlApi().getAllGitLabCiYamlTemplates();
-                    System.out.println(list);
-                    break;
-                case GET_SINGLE:
-                    if (key == null) {
-                        throw new IllegalStateException("Key (--key) id is mandatory");
-                    }
-                    GitLabCiTemplate template = gitLabApi.getGitLabCiYamlApi().getSingleGitLabCiYamlTemplate(key);
-                    System.out.println(template);
-                    break;
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
+            switch (action) {
+            case GET_ALL:
+                List<GitLabCiTemplateElement> list = gitLabApi.getGitLabCiYamlApi()
+                        .getAllGitLabCiYamlTemplates();
+                System.out.println(list);
+                break;
+            case GET_SINGLE:
+                if (key == null) {
+                    throw new IllegalStateException("Key (--key) id is mandatory");
+                }
+                GitLabCiTemplate template = gitLabApi.getGitLabCiYamlApi()
+                        .getSingleGitLabCiYamlTemplate(key);
+                System.out.println(template);
+                break;
             }
         }
         return 0;

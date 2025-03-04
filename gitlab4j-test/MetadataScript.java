@@ -31,6 +31,8 @@ class MetadataScript implements Callable<Integer> {
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
+    @Option(names = { "-v", "--verbose" }, description = "log http trafic")
+    Boolean logHttp;
 
     @Override
     public Integer call() throws Exception {
@@ -46,7 +48,11 @@ class MetadataScript implements Callable<Integer> {
         String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = new GitLabApi(gitLabUrl, gitLabAuthValue)) {
-            Metadata m = gitLabApi.getMetadataApi().getMetadata();
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
+            Metadata m = gitLabApi.getMetadataApi()
+                    .getMetadata();
             System.out.println(m);
         }
         return 0;

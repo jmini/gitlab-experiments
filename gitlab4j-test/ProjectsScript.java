@@ -72,6 +72,9 @@ class ProjectsScript implements Callable<Integer> {
         String gitLabAuthValue = readProperty(prop, "GITLAB_AUTH_VALUE");
 
         try (GitLabApi gitLabApi = createGitLabApi(gitLabUrl, gitLabAuthValue)) {
+            if (logHttp != null && logHttp) {
+                gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
+            }
             System.out.println("Action " + action + " ...");
 
             Project project;
@@ -101,10 +104,10 @@ class ProjectsScript implements Callable<Integer> {
                 projectIdMandatory();
                 p = createProject();
                 Object id = idOrPath(projectId);
-                if(id instanceof Long) {
+                if (id instanceof Long) {
                     p.withId((Long) id);
                 } else {
-                    throw new IllegalStateException("Project id must be a Long");   
+                    throw new IllegalStateException("Project id must be a Long");
                 }
                 project = gitLabApi.getProjectApi()
                         .updateProject(p);
@@ -123,10 +126,6 @@ class ProjectsScript implements Callable<Integer> {
     }
 
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {
-        if (logHttp != null && logHttp) {
-            return new GitLabApi(gitLabUrl, gitLabAuthValue)
-                .withRequestResponseLogging(java.util.logging.Level.INFO);
-        }
         return new GitLabApi(gitLabUrl, gitLabAuthValue);
     }
 
