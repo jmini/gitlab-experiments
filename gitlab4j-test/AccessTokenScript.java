@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.8
+//DEPS https://github.com/jmini/gitlab4j-api/commit/1627d509400bcd4f9de092e9e8c30cceddc62da4
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -10,10 +10,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.gitlab4j.api.GitLabApi;
+import org.gitlab4j.api.models.ImpersonationToken.Scope;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -28,8 +34,26 @@ public class AccessTokenScript implements Callable<Integer> {
             GITLAB_AUTH_VALUE=
             """;
 
-    @Parameters(index = "0", description = "action to execute", defaultValue = "GET")
+    @Parameters(index = "0", description = "action to execute", defaultValue = "GET_SELF")
     private Action action;
+
+    @Option(names = { "-u", "--user" }, description = "user id or username")
+    String userIdOrUsername;
+
+    @Option(names = { "-i", "--tokenId" }, description = "token id")
+    String tokenId;
+
+    @Option(names = { "-n", "--tokenName" }, description = "token name")
+    String tokenName;
+
+    @Option(names = { "-d", "--description" }, description = "token description")
+    String description;
+
+    @Option(names = { "-e", "--expiresAt" }, description = "token expiration date")
+    Date expiresAt;
+
+    @Option(names = { "-s", "--scope" }, description = "token scopes")
+    List<Scope> scopes = new ArrayList<>();
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
@@ -38,7 +62,7 @@ public class AccessTokenScript implements Callable<Integer> {
     Boolean logHttp;
 
     private static enum Action {
-        GET
+        GET_SELF, LIST, CREATE, ROTATE
     }
 
     @Override
@@ -59,16 +83,39 @@ public class AccessTokenScript implements Callable<Integer> {
                 gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 2000000000);
             }
             switch (action) {
-            case GET:
+            case GET_SELF:
                 var selfPersonalAccessToken = gitLabApi.getPersonalAccessTokenApi()
                         .getPersonalAccessToken();
                 System.out.println(selfPersonalAccessToken);
+                break;
+            case LIST:
+                var tokens = gitLabApi.getPersonalAccessTokenApi()
+                        .getPersonalAccessTokens();
+                System.out.println(tokens);
+                break;
+            case CREATE:
+                ensureExists(userIdOrUsername, "user");
+                var newToken = gitLabApi.getUserApi()
+                        .createPersonalAccessToken(idOrPath(userIdOrUsername), tokenName, description, expiresAt, scopes.toArray(new Scope[] {}));
+                System.out.println(newToken);
+                break;
+            case ROTATE:
+                ensureExists(tokenId, "tokenId");
+                var rotated = gitLabApi.getPersonalAccessTokenApi()
+                        .rotatePersonalAccessToken(tokenId, toDate(LocalDate.now()
+                                .plusDays(30)));
+                System.out.println(rotated);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected value: " + action);
             }
         }
         return 0;
+    }
+
+    private Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
     }
 
     private GitLabApi createGitLabApi(String gitLabUrl, String gitLabAuthValue) {

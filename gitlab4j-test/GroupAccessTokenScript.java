@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS org.gitlab4j:gitlab4j-api:6.0.0-rc.8
+//DEPS https://github.com/jmini/gitlab4j-api/commit/1627d509400bcd4f9de092e9e8c30cceddc62da4
 //JAVA 17
 
 import java.io.FileInputStream;
@@ -42,6 +42,9 @@ public class GroupAccessTokenScript implements Callable<Integer> {
 
     @Option(names = { "-n", "--tokenName" }, description = "token name")
     private String tokenName;
+
+    @Option(names = { "-d", "--description" }, description = "token description")
+    private String description;
 
     @Option(names = { "-e", "--expiresAt" }, description = "token expiration date")
     private Date expiresAt;
@@ -95,7 +98,7 @@ public class GroupAccessTokenScript implements Callable<Integer> {
                 break;
             case CREATE_GROUP_ACCESS_TOKEN:
                 var createdToken = gitLabApi.getGroupApi()
-                        .createGroupAccessToken(idOrPath(group), tokenName, expiresAt, scopes.toArray(new Scope[] {}), accessLevel);
+                        .createGroupAccessToken(idOrPath(group), tokenName, description, expiresAt, scopes.toArray(new Scope[] {}), accessLevel);
                 System.out.println(createdToken);
                 break;
             case ROTATE_GROUP_ACCESS_TOKEN:
