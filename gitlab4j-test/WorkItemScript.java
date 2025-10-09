@@ -1,8 +1,8 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/0cd5899a843a3da6f377dd059c4f027771db03fb
-//DEPS patched.unblu.io.smallrye:smallrye-graphql-client-implementation-vertx:2.12.2-unblu-2
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/be727f4410d8cbc61d79cf71e563ba3bfec392a6
+//DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.13.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
 //JAVA 17
 //RUNTIME_OPTIONS -Djava.util.logging.manager=org.jboss.logmanager.LogManager
