@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/ab2fc7a8106879b0f268e546a40e2bef633d0e5c
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/f62179a9061fdbb46ab3dbfd58eb279d254d4d9a
 //xxDEPS com.unblu.gitlab:gitlab-workitem-graphql-client:1.0.0-SNAPSHOT
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
@@ -79,7 +79,7 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
 
     private void getMergeRequest(WorkitemClientApi api) {
         ensureExists(id, "id");
-        var mr = api.getMergeRequest(new MergeRequestID(id));
+        var mr = api.getMergeRequest(new MergeRequestID(id), NotesFilterType.ONLY_COMMENTS);
         System.out.println("Reading config: " + mr);
     }
 
