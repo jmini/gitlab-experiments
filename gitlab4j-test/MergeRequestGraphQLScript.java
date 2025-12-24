@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/f62179a9061fdbb46ab3dbfd58eb279d254d4d9a
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/ad522587ca5c34f9423d34b5ab7dc20b2ab5e05e
 //xxDEPS com.unblu.gitlab:gitlab-workitem-graphql-client:1.0.0-SNAPSHOT
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
@@ -45,11 +45,17 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
     @Option(names = { "-i", "--id" }, description = "merge request id")
     private String id;
 
+    @Option(names = { "-p", "--project" }, description = "project")
+    private String project;
+
+    @Option(names = { "-r",  "--iid", "--ref", "--reference" }, description = "iids of the MRs in the project")
+    private List<String> iids;
+
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
     private static enum Action {
-        GET_MERGE_REQUEST
+        GET_MERGE_REQUEST, GET_MERGE_REQUEST_IN_PROJECT
     }
 
     @Override
@@ -70,6 +76,9 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
         case GET_MERGE_REQUEST:
             getMergeRequest(api);
             break;
+        case GET_MERGE_REQUEST_IN_PROJECT:
+            getMergeRequestInProject(api);
+            break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
         }
@@ -80,7 +89,23 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
     private void getMergeRequest(WorkitemClientApi api) {
         ensureExists(id, "id");
         var mr = api.getMergeRequest(new MergeRequestID(id), NotesFilterType.ONLY_COMMENTS);
-        System.out.println("Reading config: " + mr);
+        printMr(mr);
+    }
+
+    private void getMergeRequestInProject(WorkitemClientApi api) {
+        ensureExists(project, "project");
+        ensureExists(iids, "iid");
+        var p = api.getMergeRequestsInProject(project, iids, NotesFilterType.ONLY_COMMENTS);
+        for (MergeRequest mr : p.getMergeRequests().getNodes()) {
+            printMr(mr);
+        }
+    }
+
+    private void printMr(MergeRequest mr) {
+        //System.out.println("MergeRequest: " + mr);
+        System.out.println("===");
+        System.out.println("MergeRequest title: " + mr.getTitle());
+        System.out.println("MergeRequest notes: " + mr.getNotes().getNodes().size());
     }
 
     static WorkitemClientApi createGraphQLWorkitemClientApi(String gitLabUrl, String gitlabToken) {
