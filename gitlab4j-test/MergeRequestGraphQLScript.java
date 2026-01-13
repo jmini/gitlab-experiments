@@ -1,7 +1,7 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 
 //DEPS info.picocli:picocli:4.6.3
-//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/ad522587ca5c34f9423d34b5ab7dc20b2ab5e05e
+//DEPS https://github.com/unblu/gitlab-workitem-graphql-client/commit/0c7c4c4187cca2ccbd480a7928313ea9904506bc
 //xxDEPS com.unblu.gitlab:gitlab-workitem-graphql-client:1.0.0-SNAPSHOT
 //DEPS io.smallrye:smallrye-graphql-client-implementation-vertx:2.11.0
 //DEPS org.jboss.logmanager:jboss-logmanager:3.1.1.Final
@@ -16,15 +16,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import graphql.gitlab.GitLabPayloadResponse;
 import graphql.gitlab.api.WorkitemClientApi;
-import graphql.gitlab.model.*;
+import graphql.gitlab.model.LabelID;
+import graphql.gitlab.model.MergeRequest;
+import graphql.gitlab.model.MergeRequestID;
+import graphql.gitlab.model.MergeRequestSetLabelsInput;
+import graphql.gitlab.model.NotesFilterType;
+import graphql.gitlab.model.Project;
 import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -48,14 +51,17 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
     @Option(names = { "-p", "--project" }, description = "project")
     private String project;
 
-    @Option(names = { "-r",  "--iid", "--ref", "--reference" }, description = "iids of the MRs in the project")
+    @Option(names = { "-r", "--iid", "--ref", "--reference" }, description = "iids of the MRs in the project")
     private List<String> iids;
+
+    @Option(names = { "-l", "--label" }, description = "title of the label to set")
+    private List<String> labels = new ArrayList<>();
 
     @Option(names = { "-c", "--config" }, description = "configuration file location")
     String configFile;
 
     private static enum Action {
-        GET_MERGE_REQUEST, GET_MERGE_REQUEST_IN_PROJECT
+        GET_MERGE_REQUEST, GET_MERGE_REQUEST_IN_PROJECT, UPDATE_LABELS
     }
 
     @Override
@@ -79,6 +85,9 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
         case GET_MERGE_REQUEST_IN_PROJECT:
             getMergeRequestInProject(api);
             break;
+        case UPDATE_LABELS:
+            mergeRequestSetLabels(api);
+            break;
         default:
             throw new IllegalArgumentException("Unexpected value: " + action);
         }
@@ -96,9 +105,36 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
         ensureExists(project, "project");
         ensureExists(iids, "iid");
         var p = api.getMergeRequestsInProject(project, iids, NotesFilterType.ONLY_COMMENTS);
-        for (MergeRequest mr : p.getMergeRequests().getNodes()) {
+        for (MergeRequest mr : p.getMergeRequests()
+                .getNodes()) {
             printMr(mr);
         }
+    }
+
+    private void mergeRequestSetLabels(WorkitemClientApi api) {
+        ensureExists(project, "project");
+        ensureExists(iids, "iid");
+        ensureExists(labels, "label");
+        if (iids.size() > 1) {
+            throw new IllegalStateException("only one '--iid' must be set");
+        }
+        Project p = api.project(project, true, null);
+
+        List<LabelID> list = p.getLabels()
+                .getNodes()
+                .stream()
+                .filter(l -> labels.contains(l.getTitle()))
+                .map(l -> l.getId())
+                .toList();
+        MergeRequestSetLabelsInput input = new MergeRequestSetLabelsInput()
+                .setProjectPath(project)
+                .setIid(iids.get(0))
+                .setLabelIds(list)
+        //
+        ;
+        var result = api.mergeRequestSetLabels(input);
+        ensureNoErrors("set labels", result);
+        printMr(result.getMergeRequest());
     }
 
     private void printMr(MergeRequest mr) {
@@ -106,6 +142,9 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
         System.out.println("===");
         System.out.println("MergeRequest title: " + mr.getTitle());
         System.out.println("MergeRequest notes: " + mr.getNotes().getNodes().size());
+        System.out.println("MergeRequest labels: " + mr.getLabels()
+                .getNodes().stream().map(l -> l.getTitle()).toList());
+
     }
 
     static WorkitemClientApi createGraphQLWorkitemClientApi(String gitLabUrl, String gitlabToken) {
@@ -123,22 +162,10 @@ public class MergeRequestGraphQLScript implements Callable<Integer> {
         }
     }
 
-    private void ensureOneExists(Holder... values) {
-        List<Holder> list = Arrays.stream(values)
-                .filter(h -> h.value != null)
-                .toList();
-        if (list.isEmpty()) {
-            String names = Arrays.stream(values)
-                    .map(h -> "--" + h.name)
-                    .collect(Collectors.joining(", "));
-            throw new IllegalStateException("One of " + names + " must be set");
-        }
-        if (list.size() > 1) {
-            String names = list.stream()
-                    .map(h -> "--" + h.name)
-                    .collect(Collectors.joining(", "));
-            throw new IllegalStateException("Not all of " + names + " can be set at the same time");
-
+    private static void ensureNoErrors(String requestName, GitLabPayloadResponse response) {
+        List<String> errors = response.getErrors();
+        if (!errors.isEmpty()) {
+            throw new IllegalStateException("Expecting no errors in '" + requestName + "', but got: " + errors);
         }
     }
 
